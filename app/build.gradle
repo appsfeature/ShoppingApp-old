@@ -1,0 +1,87 @@
+plugins {
+    id 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
+
+android {
+    flavorDimensions "versionCode"
+    compileSdk 31
+
+    defaultConfig {
+        minSdk 19
+        targetSdk 31
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    productFlavors {
+        dynamicapps {
+            applicationId "com.appsfeature.dynamicapps"
+            versionCode 10
+            versionName "1.1"
+            manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.dynamicapps'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
+        }
+    }
+    signingConfigs {
+        dynamicapps {
+            storeFile file("../keystore/dynamicapps.jks")
+            storePassword "dynamicapps"
+            keyAlias "dynamicapps"
+            keyPassword "dynamicapps"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            productFlavors.dynamicapps.signingConfig signingConfigs.dynamicapps
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.appcompat"
+    implementation "androidx.recyclerview:recyclerview:$rootProject.ext.recyclerview"
+    implementation "com.google.android.material:material:$rootProject.ext.material"
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.ext.constraintlayout"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$rootProject.ext.swiperefreshlayout"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    implementation "com.google.firebase:firebase-crashlytics:$rootProject.ext.fb_crashlytics_version"
+    implementation 'com.google.firebase:firebase-dynamic-links:21.0.1'
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit_version"
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.onesignal:OneSignal:[4.0.0, 4.99.99]'
+
+//    implementation 'gun0912.ted:tedpermission:2.2.3'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.google.android.play:core:1.10.3'
+
+    implementation 'com.github.appsfeature:progress-button:1.2'
+    implementation "com.github.appsfeature:login-sdk:1.9"
+    implementation 'com.github.appsfeature:browser:2.8'
+
+    implementation "org.bitbucket.android-dennislabs:helper:$rootProject.ext.helper_version"
+    implementation 'com.github.appsfeature:dynamic-module:1.2-alpha04'
+    implementation 'com.github.appsfeature:form-builder:2.5'
+    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'com.tbuonomo:dotsindicator:4.2'
+
+}

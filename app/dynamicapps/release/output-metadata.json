@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.appsfeature.dynamicapps",
+  "variantName": "dynamicappsRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 10,
+      "versionName": "1.1",
+      "outputFile": "app-dynamicapps-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

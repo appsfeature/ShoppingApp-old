@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.appsfeature.global">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <application
+        android:name="com.appsfeature.global.AppApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        android:theme="@style/ActivityTheme.NoActionBar">
+        <activity android:name="com.appsfeature.global.activity.SplashScreen"
+            android:exported="true"
+            android:theme="@style/AppTheme.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:host="@string/url_public_domain_host_manifest"
+                    android:scheme="https"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.appsfeature.global.activity.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
+        <activity android:name=".activity.HtmlViewerActivity"
+            android:theme="@style/ActivityTheme.ActionBar"
+            android:exported="false"/>
+
+        <activity
+            android:name=".video.YTPlayerActivity"
+            android:theme="@style/ActivityTheme.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"/>
+
+        <activity android:name="com.appsfeature.global.login.LoginActivity"
+            android:theme="@style/ActivityTheme.NoActionBar"
+            android:exported="false"/>
+
+        <activity android:name=".activity.NotificationActivity"
+            android:theme="@style/ActivityTheme.ActionBar"
+            android:label="Notification"
+            android:exported="false"/>
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"
+            android:exported="true" />
+
+<!--        <meta-data-->
+<!--            android:name="com.onesignal.NotificationOpened.DEFAULT"-->
+<!--            android:value="DISABLE" />-->
+
+        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+            android:value="com.appsfeature.global.onesignal.OneSignalNotificationReceivedHandler" />
+
+        <meta-data android:name="com.onesignal.suppressLaunchURLs" android:value="true"/>
+
+        <meta-data
+            android:name = "com.appsfeature.onesignal"
+            android:value = "${onesignal_app_id}"/>
+
+        <meta-data
+            android:name = "com.appsfeature.apikey"
+            android:value = "${MAPS_API_KEY}"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+    </application>
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>
+
+</manifest>

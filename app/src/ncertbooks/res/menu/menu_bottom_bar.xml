@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_1"
+        android:icon="@drawable/ic_menu_bottom_bar_home"
+        android:title="NCERT" />
+
+    <item
+        android:id="@+id/menu_2"
+        android:icon="@drawable/ic_menu_bottom_bar_updates"
+        android:title="Construction" />
+
+    <item
+        android:id="@+id/menu_3"
+        android:icon="@drawable/ic_menu_bottom_bar_updates"
+        android:title="Blogger" />
+
+    <item
+        android:id="@+id/menu_4"
+        android:icon="@drawable/ic_menu_bottom_bar_updates"
+        android:title="Demo2"
+        android:visible="true"/>
+
+</menu>
