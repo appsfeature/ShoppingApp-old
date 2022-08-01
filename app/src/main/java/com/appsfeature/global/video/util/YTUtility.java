@@ -75,7 +75,7 @@ public class YTUtility {
 
     public static void playVideo(Activity activity, int catId, String title, String description, String videoIdOrUrl, int videoTime, int videoDuration, boolean isPlayerStyleMinimal) {
         ExtraProperty extraProperty = new ExtraProperty();
-        extraProperty.setId(catId);
+        extraProperty.setCatId(catId);
         extraProperty.setVideoId(getVideoIdFromUrl(videoIdOrUrl));
         extraProperty.setTitle(title);
         extraProperty.setDescription(description);

@@ -38,7 +38,7 @@ public class YTPlayerActivity extends YouTubeBaseActivity implements YouTubePlay
     private String mDescription;
     private ExtraProperty extraProperty;
     private int videoTime;
-    private boolean isPlayerStyleMinimal = false;
+    private boolean isPlayerStyleMinimal = true;
     private int mCatId;
     private TextView tvTitle, tvDescription;
 
@@ -61,7 +61,7 @@ public class YTPlayerActivity extends YouTubeBaseActivity implements YouTubePlay
             if(extraProperty != null && extraProperty.getVideoId() != null){
                 mTitle = extraProperty.getTitle();
                 mDescription = extraProperty.getDescription();
-                mCatId = extraProperty.getId();
+                mCatId = extraProperty.getCatId();
                 mVideoId = extraProperty.getVideoId();
                 videoTime = extraProperty.getVideoTime();
                 isPlayerStyleMinimal = extraProperty.isPlayerStyleMinimal();
@@ -119,9 +119,9 @@ public class YTPlayerActivity extends YouTubeBaseActivity implements YouTubePlay
             youTubePlayer.cueVideo(mVideoId, videoTime);
         }
 
-        if(isPlayerStyleMinimal) {
+//        if(isPlayerStyleMinimal) {
             youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
-        }
+//        }
 
         youTubePlayer.setOnFullscreenListener(new YouTubePlayer.OnFullscreenListener() {
             @Override

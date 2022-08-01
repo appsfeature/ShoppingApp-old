@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import com.appsfeature.global.AppValues;
 import com.appsfeature.global.activity.HtmlViewerActivity;
 import com.appsfeature.global.activity.MainActivity;
+import com.appsfeature.global.activity.ProductDetailActivity;
+import com.appsfeature.global.activity.ProductListActivity;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.listeners.ContentType;
 import com.appsfeature.global.listeners.LoginType;
@@ -37,11 +39,11 @@ import java.util.TreeMap;
 
 public class ClassUtil {
 
-    public static void onItemClicked(Activity activity, DMProperty parent, CategoryModel category, ContentModel mItem) {
+    public static void onItemClicked(Activity activity, DMProperty parent, CategoryModel category, DMContent mItem) {
         onItemClicked(activity, parent, category, SupportUtil.getContentModel(mItem));
     }
 
-    public static void onItemClicked(Activity activity, DMProperty parent, CategoryModel category, DMContent mItem) {
+    public static void onItemClicked(Activity activity, DMProperty parent, CategoryModel category, ContentModel mItem) {
         OtherProperty otherProperty = null;
 //        if(!mItem.isContent()){
 //            DMClassUtil.openDynamicListActivity(activity, DMUtility.getProperty(parent, mItem));
@@ -77,7 +79,7 @@ public class ClassUtil {
                     }
                     boolean isPlayerStyleMinimal = false;
                     if(otherProperty != null) isPlayerStyleMinimal = otherProperty.isPlayerStyleMinimal();
-                    ClassUtil.openVideo(activity, mItem.getSubCatId(), mItem.getTitle(), mItem.getDescription(), mItem.getLink(), mItem.getVideoTime(), mItem.getVideoDuration(), isPlayerStyleMinimal);
+                    ClassUtil.openVideo(activity, mItem.getSubCatId(), mItem.getTitle(), mItem.getDescription(), mItem.getVideoUrl(), mItem.getVideoTime(), mItem.getVideoDuration(), isPlayerStyleMinimal);
                     break;
                 case ContentType.TYPE_FORM:
                     try {
@@ -107,7 +109,12 @@ public class ClassUtil {
                     }
                     break;
                 default:
-                    BaseUtil.showToast(activity, "No option available for take action.");
+                    if(category.getItemType() == CategoryType.TYPE_SUB_CATEGORY
+                            || category.getItemType() == CategoryType.TYPE_HORIZONTAL_CARD_SCROLL){
+                        openActivityProductList(activity, mItem.getId(), mItem.getCategoryId(), mItem.getTitle());
+                    }else {
+                        BaseUtil.showToast(activity, "No option available for take action.");
+                    }
                     break;
             }
 //        }
@@ -122,16 +129,6 @@ public class ClassUtil {
         }
         return null;
     }
-
-    public static void openActivityHtmlViewer(Activity activity, int id, String title, String description) {
-        ExtraProperty extraProperty = new ExtraProperty();
-        extraProperty.setId(id);
-        extraProperty.setTitle(title);
-        extraProperty.setDescription(description);
-        activity.startActivity(new Intent(activity, HtmlViewerActivity.class)
-                .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));
-    }
-
 
     public static void openLink(Context context, String title, String webUrl) {
         openLink(context, title, webUrl, false);
@@ -214,4 +211,29 @@ public class ClassUtil {
         activity.startActivity(intent);
     }
 
+    public static void openActivityHtmlViewer(Activity activity, int id, String title, String description) {
+        ExtraProperty extraProperty = new ExtraProperty();
+        extraProperty.setCatId(id);
+        extraProperty.setTitle(title);
+        extraProperty.setDescription(description);
+        activity.startActivity(new Intent(activity, HtmlViewerActivity.class)
+                .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));
+    }
+
+    public static void openActivityProductList(Activity activity, int catId, int subCatId, String title) {
+        ExtraProperty extraProperty = new ExtraProperty();
+        extraProperty.setCatId(catId);
+        extraProperty.setParentId(subCatId);
+        extraProperty.setTitle(title);
+        activity.startActivity(new Intent(activity, ProductListActivity.class)
+                .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));
+    }
+
+
+    public static void openActivityProductView(Activity activity, ExtraProperty property, ContentModel item) {
+        ExtraProperty extraProperty = property.getClone();
+        extraProperty.setContentModel(item);
+        activity.startActivity(new Intent(activity, ProductDetailActivity.class)
+                .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));
+    }
 }

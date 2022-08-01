@@ -28,7 +28,7 @@ public class HtmlViewerActivity extends BaseActivity {
         setContentView(R.layout.activity_html_viewer);
 
         onInitializeUI();
-        setUpToolBar(appPresenter.getExtraProperty().getTitle());
+        setUpToolBar(property.getTitle());
         loadData();
     }
 
@@ -37,8 +37,8 @@ public class HtmlViewerActivity extends BaseActivity {
         String textColor = SupportUtil.getColorValue(this, R.color.themeColorBlackWhite);
         String bgColor = SupportUtil.getColorValue(this, R.color.themeWindowBackground);
 
-        if(!TextUtils.isEmpty(appPresenter.getExtraProperty().getDescription())) {
-            webViewHelper.setDataWebView(appPresenter.getExtraProperty().getDescription(), textColor, bgColor);
+        if(!TextUtils.isEmpty(property.getDescription())) {
+            webViewHelper.setDataWebView(property.getDescription(), textColor, bgColor);
         }else {
             onErrorOccurred(new Exception(BaseConstants.NO_DATA));
         }

@@ -45,7 +45,7 @@
 
         <activity
             android:name=".video.YTPlayerActivity"
-            android:theme="@style/ActivityTheme.NoActionBar"
+            android:theme="@style/AppTheme.Transparent"
             android:configChanges="orientation|screenSize"
             android:exported="false"/>
 
@@ -63,7 +63,14 @@
             android:theme="@style/Base.Theme.AppCompat"
             android:exported="true" />
 
-<!--        <meta-data-->
+        <activity android:name=".activity.ProductListActivity"
+            android:theme="@style/ActivityTheme.ActionBar"
+            android:exported="false" />
+        <activity android:name=".activity.ProductDetailActivity"
+            android:theme="@style/ActivityTheme.ActionBar"
+            android:exported="false" />
+
+        <!--        <meta-data-->
 <!--            android:name="com.onesignal.NotificationOpened.DEFAULT"-->
 <!--            android:value="DISABLE" />-->
 

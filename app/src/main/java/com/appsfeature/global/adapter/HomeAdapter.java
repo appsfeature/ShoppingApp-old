@@ -18,6 +18,7 @@ import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.dynamic.adapter.BaseDynamicAdapter;
 import com.dynamic.adapter.holder.base.BaseCommonHolder;
+import com.dynamic.listeners.DMFlingType;
 import com.dynamic.listeners.DynamicCallback;
 import com.helper.callback.Response;
 
@@ -26,7 +27,7 @@ import java.util.List;
 public class HomeAdapter extends BaseDynamicAdapter<CategoryModel, ContentModel> {
 
     public HomeAdapter(Context context, List<CategoryModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> listener) {
-        super(context, mList, listener);
+        super(context, mList, DMFlingType.None, listener);
     }
 
     @Override

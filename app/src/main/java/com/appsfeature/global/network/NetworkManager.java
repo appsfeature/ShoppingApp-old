@@ -6,7 +6,8 @@ import android.text.TextUtils;
 import com.appsfeature.global.login.LoginListener;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.CommonModel;
-import com.appsfeature.global.model.HomeModelEntity;
+import com.appsfeature.global.model.AppBaseModel;
+import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.SessionModel;
 import com.appsfeature.global.util.AppData;
 import com.appsfeature.global.util.AppPreference;
@@ -14,7 +15,6 @@ import com.dynamic.DynamicModule;
 import com.dynamic.listeners.ApiHost;
 import com.dynamic.listeners.ApiRequestType;
 import com.dynamic.listeners.DynamicCallback;
-import com.dynamic.network.ConfigManager;
 import com.dynamic.network.DMNetworkManager;
 import com.dynamic.network.NetworkCallback;
 import com.dynamic.network.NetworkModel;
@@ -114,12 +114,50 @@ public class NetworkManager extends DMNetworkManager {
             public void onComplete(boolean status, NetworkModel data) {
                 try {
                     if (status && !TextUtils.isEmpty(data.getData())) {
-                        HomeModelEntity entity = data.getData(new TypeToken<HomeModelEntity>() {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
                         });
                         if (entity != null && entity.getList() != null && entity.getList().size() > 0) {
                             AppPreference.setImageUrl(entity.getImageUrl());
                             DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
                             callback.onSuccess(entity.getList());
+                        } else {
+                            callback.onFailure(new Exception(BaseConstants.NO_DATA));
+                        }
+                    } else {
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkModel> call, Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
+            }
+        });
+    }
+
+    public void getAppProductBySubCategory(int catId, int subCatId, DynamicCallback.Listener<List<ContentModel>> callback) {
+        Map<String, String> params = new HashMap<>();
+        params.put("category_id", catId + "");
+        params.put("subcategory_id", subCatId + "");
+        configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_PRODUCT_BY_SUBCATEGORY, params, new NetworkCallback.Response<NetworkModel>() {
+            @Override
+            public void onComplete(boolean status, NetworkModel data) {
+                try {
+                    if (status && !TextUtils.isEmpty(data.getData())) {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
+                        });
+                        if (entity != null && entity.getProductList() != null && entity.getProductList().size() > 0) {
+                            AppPreference.setImageUrl(entity.getImageUrl());
+                            DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
+                            callback.onSuccess(entity.getProductList());
                         } else {
                             callback.onFailure(new Exception(BaseConstants.NO_DATA));
                         }

@@ -13,25 +13,19 @@ import com.appsfeature.global.AppApplication;
 import com.appsfeature.global.listeners.AppCallback;
 import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.viewmodel.AppViewModel;
+import com.dynamic.activity.DMBaseActivity;
+import com.dynamic.activity.DMBaseGenericActivity;
+import com.dynamic.fragment.base.DMBaseGenericFragment;
 
 
-public abstract class BaseActivity extends AppCompatActivity implements AppCallback.View {
-
-    protected AppViewModel appPresenter;
-
-    public ExtraProperty getExtraProperty() {
-        return appPresenter.getExtraProperty();
-    }
+public abstract class BaseActivity extends DMBaseGenericActivity<ExtraProperty> implements AppCallback.View {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appPresenter = new ViewModelProvider(getViewModelStore(), AppApplication.getInstance().getViewModelFactory()).get(AppViewModel.class);
 
-        appPresenter.initialize(this, getIntent());
-
-        if(getExtraProperty()!=null && !TextUtils.isEmpty(getExtraProperty().getTitle())){
-            setUpToolBar(getExtraProperty().getTitle());
+        if(property !=null && !TextUtils.isEmpty(property.getTitle())){
+            setUpToolBar(property.getTitle());
         }
     }
 

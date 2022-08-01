@@ -23,7 +23,7 @@ ext {
     swiperefreshlayout = '1.1.0'
 
     api_config = '1.7-alpha09'
-    helper_version = '1.8-alpha18'
+    helper_version = '1.8-alpha19'
 
     retrofit_version = '2.9.0'
     retrofit_okhttp_version = '4.9.3'

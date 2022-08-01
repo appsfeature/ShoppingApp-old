@@ -10,7 +10,7 @@ public class ContentModel extends DMContent implements Serializable {
 
     @SerializedName("category_id")
     @Expose
-    public String categoryId;
+    public int categoryId;
     @SerializedName("season_id")
     @Expose
     public String seasonId;
@@ -28,10 +28,10 @@ public class ContentModel extends DMContent implements Serializable {
     public int visibility;
     @SerializedName("price")
     @Expose
-    public String price;
+    public int price;
     @SerializedName("quantity")
     @Expose
-    public String quantity;
+    public int quantity;
     @SerializedName("feature")
     @Expose
     public String feature;
@@ -51,11 +51,11 @@ public class ContentModel extends DMContent implements Serializable {
     @Expose
     public String publicationStatus;
 
-    public String getCategoryId() {
+    public int getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(String categoryId) {
+    public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -101,19 +101,19 @@ public class ContentModel extends DMContent implements Serializable {
         this.visibility = visibility;
     }
 
-    public String getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 

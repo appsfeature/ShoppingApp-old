@@ -145,10 +145,11 @@ public class SupportUtil extends BaseUtil {
         return (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())).format(new Date());
     }
 
-
-    public static DMContent getContentModel(ContentModel mItem) {
-        mItem.setLink(mItem.getVideoUrl());
-        return mItem;
+    public static ContentModel getContentModel(DMContent mItem) {
+        return convert(mItem, DMContent.class, ContentModel.class);
     }
 
+    public static <T> T convert(Object item, Class<?> inClass , Class<T> outClass) {
+        return GsonParser.fromJson(GsonParser.toJsonAll(item, inClass), outClass);
+    }
 }

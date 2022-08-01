@@ -14,11 +14,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.appsfeature.global.adapter.HomeAdapter;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
+import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.ClassUtil;
 import com.dynamic.R;
 import com.dynamic.fragment.base.DMBaseFragment;
+import com.dynamic.fragment.base.DMBaseGenericFragment;
 import com.dynamic.listeners.DynamicCallback;
+import com.dynamic.util.DMProperty;
 import com.dynamic.util.DMUtility;
 import com.helper.callback.Response;
 import com.helper.util.BaseUtil;
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class HomeFragment extends DMBaseFragment {
+public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
     private View layoutNoData;
     private HomeAdapter adapter;
     private final List<CategoryModel> mList = new ArrayList<>();
@@ -86,7 +89,7 @@ public class HomeFragment extends DMBaseFragment {
     }
 
     private void getDataFromServer() {
-        AppDataManager.get(activity).getAppDataUser(catId, seasonId, new DynamicCallback.Listener<List<CategoryModel>>() {
+        AppDataManager.get(activity).getAppDataUser(property.getCatId(), seasonId, new DynamicCallback.Listener<List<CategoryModel>>() {
             @Override
             public void onSuccess(List<CategoryModel> response) {
                 showProgress(false);

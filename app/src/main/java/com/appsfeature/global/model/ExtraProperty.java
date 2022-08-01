@@ -2,6 +2,7 @@ package com.appsfeature.global.model;
 
 import androidx.annotation.NonNull;
 
+import com.dynamic.util.DMProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.helper.model.BaseCategoryProperty;
@@ -9,10 +10,11 @@ import com.helper.util.GsonParser;
 
 import java.io.Serializable;
 
-public class ExtraProperty extends BaseCategoryProperty implements Cloneable, Serializable {
+public class ExtraProperty extends DMProperty implements Cloneable, Serializable {
 
     private String description;
     private String videoId;
+    private int parentId;
     private int videoTime = 0;
     private int videoDuration = 0;
     private int isRead = 0;
@@ -21,7 +23,16 @@ public class ExtraProperty extends BaseCategoryProperty implements Cloneable, Se
     private String channelId;
     private boolean isPlayerStyleMinimal;
 
+    private ContentModel contentModel;
     private CommonModel commonModel;
+
+    public ContentModel getContentModel() {
+        return contentModel;
+    }
+
+    public void setContentModel(ContentModel contentModel) {
+        this.contentModel = contentModel;
+    }
 
     public CommonModel getCommonModel() {
         return commonModel;
@@ -105,6 +116,14 @@ public class ExtraProperty extends BaseCategoryProperty implements Cloneable, Se
 
     public void setPlayerStyleMinimal(boolean playerStyleMinimal) {
         isPlayerStyleMinimal = playerStyleMinimal;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     @NonNull

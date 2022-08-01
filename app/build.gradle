@@ -79,7 +79,7 @@ dependencies {
     implementation 'com.github.appsfeature:browser:2.8'
 
     implementation "org.bitbucket.android-dennislabs:helper:$rootProject.ext.helper_version"
-    implementation 'com.github.appsfeature:dynamic-module:1.2-alpha04'
+    implementation 'com.github.appsfeature:dynamic-module:1.2-alpha06'
     implementation 'com.github.appsfeature:form-builder:2.5'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'com.tbuonomo:dotsindicator:4.2'

@@ -128,11 +128,4 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
 //            }
         }
     }
-
-    private boolean isMediumVideoPlaceholderQuality = false;
-
-    public String getYoutubePlaceholderImage(String videoId) {
-        String quality = isMediumVideoPlaceholderQuality ? "mqdefault.jpg" : "maxresdefault.jpg";
-        return "https://i.ytimg.com/vi/" + videoId + "/" + quality;
-    }
 }
