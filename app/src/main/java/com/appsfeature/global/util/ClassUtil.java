@@ -20,11 +20,9 @@ import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.model.OtherProperty;
 import com.appsfeature.global.video.util.YTUtility;
 import com.browser.BrowserSdk;
-import com.dynamic.DMClassUtil;
 import com.dynamic.listeners.DMContentType;
 import com.dynamic.model.DMContent;
 import com.dynamic.util.DMProperty;
-import com.dynamic.util.DMUtility;
 import com.formbuilder.FormBuilder;
 import com.formbuilder.interfaces.FormResponse;
 import com.formbuilder.model.FormBuilderModel;
@@ -71,7 +69,7 @@ public class ClassUtil {
                     ClassUtil.openActivityHtmlViewer(activity, mItem.getId(), mItem.getTitle(), mItem.getDescription());
                     break;
                 case DMContentType.TYPE_VIDEOS:
-                case CategoryType.TYPE_VIDEO:
+                case CategoryType.TYPE_VIDEO_PRODUCT:
                     try {
                         otherProperty = GsonParser.getGson().fromJson(parent.getOtherProperty(), OtherProperty.class);
                     } catch (JsonSyntaxException e) {
@@ -110,7 +108,7 @@ public class ClassUtil {
                     break;
                 default:
                     if(category.getItemType() == CategoryType.TYPE_SUB_CATEGORY
-                            || category.getItemType() == CategoryType.TYPE_HORIZONTAL_CARD_SCROLL){
+                            || category.getItemType() == CategoryType.TYPE_PRODUCT){
                         openActivityProductList(activity, mItem.getId(), mItem.getCategoryId(), mItem.getTitle());
                     }else {
                         BaseUtil.showToast(activity, "No option available for take action.");
@@ -232,6 +230,7 @@ public class ClassUtil {
 
     public static void openActivityProductView(Activity activity, ExtraProperty property, ContentModel item) {
         ExtraProperty extraProperty = property.getClone();
+        extraProperty.setCatId(item.getId());
         extraProperty.setContentModel(item);
         activity.startActivity(new Intent(activity, ProductDetailActivity.class)
                 .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));

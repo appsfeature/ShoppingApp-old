@@ -51,7 +51,7 @@ public class YTPlayerActivity extends YouTubeBaseActivity implements YouTubePlay
     }
 
     private void initViews() {
-        tvTitle = findViewById(R.id.tv_title);
+//        tvTitle = findViewById(R.id.tv_title);
         tvDescription = findViewById(R.id.tv_description);
     }
 
@@ -208,8 +208,10 @@ public class YTPlayerActivity extends YouTubeBaseActivity implements YouTubePlay
     };
 
     public void initToolBarTheme(String title) {
-        TextView tvTitle = findViewById(R.id.tv_titile);
-        tvTitle.setText(title);
+//        TextView tvTitle = findViewById(R.id.tv_title);
+        if (tvTitle != null) {
+            tvTitle.setText(title);
+        }
         (findViewById(R.id.iv_action_back)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

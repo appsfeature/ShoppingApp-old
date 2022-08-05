@@ -5,45 +5,35 @@
     <group android:checkableBehavior="single">
 
             <item
-                android:id="@+id/nav_more_apps"
-                android:icon="@drawable/ic_nav_more_apps"
-                android:title="More Apps" />
+                android:id="@+id/nav_women"
+                android:icon="@drawable/ic_menu_female"
+                android:title="Women's Footwear" />
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_rate_us"
-                android:icon="@drawable/ic_rate_us_menu"
-                android:title="Rate us" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_logout"
-                android:visible="false"
-                android:title="Logout" />
+                android:id="@+id/nav_mens"
+                android:icon="@drawable/ic_menu_male"
+                android:title="Men's Footwear" />
 
     </group>
 
-<!--    <item android:title="Communicate">-->
-<!--        <menu>-->
-<!--            <item-->
-<!--                android:id="@+id/nav_more_apps"-->
-<!--                android:icon="@drawable/ic_nav_more_apps"-->
-<!--                android:title="More Apps" />-->
-<!--            <item-->
-<!--                android:id="@+id/nav_share"-->
-<!--                android:icon="@drawable/ic_menu_share"-->
-<!--                android:title="Share" />-->
-<!--            <item-->
-<!--                android:id="@+id/nav_rate_us"-->
-<!--                android:icon="@drawable/ic_rate_us_menu"-->
-<!--                android:title="Rate us" />-->
-<!--            <item-->
-<!--                android:id="@+id/nav_logout"-->
-<!--                android:icon="@drawable/ic_logout"-->
-<!--                android:visible="false"-->
-<!--                android:title="Logout" />-->
-<!--        </menu>-->
-<!--    </item>-->
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_more_apps"
+            android:icon="@drawable/ic_nav_more_apps"
+            android:title="More Apps" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Share" />
+        <item
+            android:id="@+id/nav_rate_us"
+            android:icon="@drawable/ic_rate_us_menu"
+            android:title="Rate us" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:visible="false"
+            android:title="Logout" />
+    </group>
 
 </menu>

@@ -1,4 +1,4 @@
-package com.appsfeature.global.adapter;
+package com.appsfeature.global.adapter.app;
 
 
 import android.text.TextUtils;

@@ -10,16 +10,16 @@ public class CategoryModel extends DMCategory<ContentModel> implements Serializa
 
     @SerializedName("id")
     @Expose
-    public String id;
+    public int id;
     @SerializedName("table_name")
     @Expose
     public String tableName;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

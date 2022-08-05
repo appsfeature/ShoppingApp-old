@@ -12,6 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.appsfeature.global.fragment.HomeFragment;
+import com.appsfeature.global.listeners.GenderType;
 import com.appsfeature.global.util.AppConstant;
 import com.appsfeature.global.util.AppPreference;
 import com.appsfeature.global.util.ClassUtil;
@@ -62,14 +63,20 @@ public class AppDesign {
                 }
 //              String s = SharedPrefUtil.getString(AppConstant.SharedPref.PLAYER_ID);
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_share) {
+                if (itemId == R.id.nav_women) {
+                    AppPreference.setGender(GenderType.TYPE_GIRL);
+                    reloadHomeData();
+                } else if (itemId == R.id.nav_mens) {
+                    AppPreference.setGender(GenderType.TYPE_BOY);
+                    reloadHomeData();
+                } else if (itemId == R.id.nav_share) {
                     SupportUtil.share(activity, "");
                 } else if (itemId == R.id.nav_rate_us) {
                     SocialUtil.rateUs(activity);
                 } else if (itemId == R.id.nav_more_apps) {
                     SocialUtil.moreApps(activity, AppConstant.DEVELOPER_NAME);
                 } else if (itemId == R.id.nav_logout) {
-                    AppPreference.clearPreferences();
+                    AppPreference.clearPreferences(activity);
                     ClassUtil.openHomeActivity(activity);
                     activity.finish();
                 }
@@ -124,12 +131,19 @@ public class AppDesign {
         if(isAddBottomBar){
             setBottomNavigationViewToHome();
         }else {
-            fragmentMapping(getDynamicFragment(AppValues.DASHBOARD_ID));
+            fragmentMapping(getDynamicFragment(AppPreference.getGender()));
         }
     }
 
-    private Fragment getDynamicFragment(int catId) {
-        return HomeFragment.getInstance(catId);
+    private HomeFragment homeFragment;
+
+    public HomeFragment getHomeFragment() {
+        return homeFragment;
+    }
+
+    private HomeFragment getDynamicFragment(int catId) {
+        if(homeFragment == null) homeFragment = HomeFragment.getInstance(catId);
+        return homeFragment;
     }
 
     private void fragmentMapping(Fragment fragment) {
@@ -156,6 +170,12 @@ public class AppDesign {
     private void handleLoginData() {
         if (navLogout != null) {
             navLogout.setVisible(AppPreference.isLoginCompleted());
+        }
+    }
+
+    public void reloadHomeData() {
+        if(getHomeFragment() != null){
+            getHomeFragment().loadData(AppPreference.getGender(), AppPreference.getSeason());
         }
     }
 }

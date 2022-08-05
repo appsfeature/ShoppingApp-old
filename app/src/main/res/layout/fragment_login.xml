@@ -40,8 +40,8 @@
                         android:layout_marginBottom="@dimen/vertical_margin"
                         android:layout_marginLeft="@dimen/vertical_margin"
                         android:layout_marginRight="@dimen/vertical_margin"
-                        card_view:cardCornerRadius="8dp"
-                        card_view:cardElevation="4dp"
+                        card_view:cardCornerRadius="@dimen/dmCardCornerRadiusApp"
+                        card_view:cardElevation="@dimen/dmCardElevationApp"
                         card_view:cardUseCompatPadding="true">
 
                         <LinearLayout

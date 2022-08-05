@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
@@ -20,7 +19,6 @@ import com.dynamic.adapter.BaseDynamicAdapter;
 import com.dynamic.adapter.holder.base.BaseCommonHolder;
 import com.dynamic.listeners.DMFlingType;
 import com.dynamic.listeners.DynamicCallback;
-import com.helper.callback.Response;
 
 import java.util.List;
 
@@ -32,12 +30,14 @@ public class HomeAdapter extends BaseDynamicAdapter<CategoryModel, ContentModel>
 
     @Override
     protected RecyclerView.ViewHolder onCreateViewHolderDynamic(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == CategoryType.TYPE_VIDEO) {
-            return new GridViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false), 2);
-        } else if (viewType == CategoryType.TYPE_SUB_CATEGORY) {
-            return new HorizontalCardScrollHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false));
-        } else {
-            return new CommonHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false));
+        switch (viewType) {
+            case CategoryType.TYPE_VIDEO_PRODUCT:
+                return new GridViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false), 2);
+            case CategoryType.TYPE_SUB_CATEGORY:
+            case CategoryType.TYPE_PRODUCT:
+                return new HorizontalCardScrollHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false));
+            default:
+                return new CommonHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_parent_slot_list, parent, false));
         }
     }
 

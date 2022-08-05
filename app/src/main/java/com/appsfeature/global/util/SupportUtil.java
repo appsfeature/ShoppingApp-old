@@ -12,6 +12,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.appsfeature.global.onesignal.OneSignalOpenHandler;
 import com.dynamic.model.DMContent;
 import com.dynamic.util.DMConstants;
 import com.dynamic.util.DMUtility;
+import com.google.gson.reflect.TypeToken;
 import com.helper.util.BaseUtil;
 import com.helper.util.GsonParser;
 import com.onesignal.OSNotification;
@@ -146,10 +148,36 @@ public class SupportUtil extends BaseUtil {
     }
 
     public static ContentModel getContentModel(DMContent mItem) {
-        return convert(mItem, DMContent.class, ContentModel.class);
+        return GsonParser.convert(mItem, DMContent.class, ContentModel.class);
     }
 
-    public static <T> T convert(Object item, Class<?> inClass , Class<T> outClass) {
-        return GsonParser.fromJson(GsonParser.toJsonAll(item, inClass), outClass);
+    public static String getImageUrlFromJsonSingle(String appImage) {
+        String[] images = getImageUrlFromJson(appImage);
+        if(images != null && images.length > 0){
+            return images[0];
+        }else {
+            return null;
+        }
+    }
+    public static String[] getImageUrlFromJson(String appImage) {
+        if (!TextUtils.isEmpty(appImage)) {
+            String baseUrl = AppPreference.getImageUrl();
+            if(BaseUtil.isValidUrl(appImage)) {
+                return new String[]{baseUrl + appImage};
+            }else if(appImage.startsWith("[")) {
+                String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
+                });
+                if(images != null && images.length > 0) {
+                    String[] imageUrls = new String[images.length];
+                    for (int i = 0; i < images.length; i++) {
+                        imageUrls[i] = baseUrl + images[i];
+                    }
+                    return imageUrls;
+                }else {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 }

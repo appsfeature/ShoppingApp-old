@@ -14,4 +14,5 @@ public interface ApiEndPoint {
     String ASSOCIATE_FORGET_PASSWORD = "";
     String GET_APP_DATA_USER = "getAppDataUser";
     String GET_APP_PRODUCT_BY_SUBCATEGORY = "getAppproduct_By_subcategory";
+    String GET_APP_PRODUCT_DETAILS = "getAppproduct_details";
 }

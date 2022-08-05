@@ -105,9 +105,9 @@ public class NetworkManager extends DMNetworkManager {
         });
     }
 
-    public void getAppDataUser(int catId, int seasonId, DynamicCallback.Listener<List<CategoryModel>> callback) {
+    public void getAppDataUser(int genderId, int seasonId, DynamicCallback.Listener<List<CategoryModel>> callback) {
         Map<String, String> params = new HashMap<>();
-        params.put("category_id", catId + "");
+        params.put("category_id", genderId + "");
         params.put("season_id", seasonId + "");
         configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_DATA_USER, params, new NetworkCallback.Response<NetworkModel>() {
             @Override
@@ -158,6 +158,43 @@ public class NetworkManager extends DMNetworkManager {
                             AppPreference.setImageUrl(entity.getImageUrl());
                             DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
                             callback.onSuccess(entity.getProductList());
+                        } else {
+                            callback.onFailure(new Exception(BaseConstants.NO_DATA));
+                        }
+                    } else {
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkModel> call, Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
+            }
+        });
+    }
+
+    public void getAppProductDetails(int productId, DynamicCallback.Listener<ContentModel> callback) {
+        Map<String, String> params = new HashMap<>();
+        params.put("product_id", productId + "");
+        configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_PRODUCT_DETAILS, params, new NetworkCallback.Response<NetworkModel>() {
+            @Override
+            public void onComplete(boolean status, NetworkModel data) {
+                try {
+                    if (status && !TextUtils.isEmpty(data.getData())) {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
+                        });
+                        if (entity != null && entity.getProductView() != null) {
+                            AppPreference.setImageUrl(entity.getImageUrl());
+                            DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
+                            callback.onSuccess(entity.getProductView());
                         } else {
                             callback.onFailure(new Exception(BaseConstants.NO_DATA));
                         }

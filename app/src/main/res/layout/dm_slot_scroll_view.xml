@@ -9,8 +9,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_margin="8dp"
-        card_view:cardCornerRadius="8dp"
-        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="@dimen/dmCardCornerRadiusApp"
+        card_view:cardElevation="@dimen/dmCardElevationApp"
         card_view:cardBackgroundColor="@color/themeBackgroundCardColor">
 
         <ImageView

@@ -6,5 +6,6 @@
 
     <color name="colorButton">#FFA500</color>
     <color name="colorButtonDark">#E49605</color>
+    <color name="colorButtonDark2">#DD2C00</color>
 
 </resources>

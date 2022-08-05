@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.appsfeature.global.adapter.HomeAdapter;
+import com.appsfeature.global.listeners.SeasonType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.network.AppDataManager;
+import com.appsfeature.global.util.AppPreference;
 import com.appsfeature.global.util.ClassUtil;
 import com.dynamic.R;
 import com.dynamic.fragment.base.DMBaseFragment;
@@ -37,7 +39,6 @@ public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
     private Activity activity;
     private RecyclerView rvList;
     private SwipeRefreshLayout swipeRefresh;
-    private int seasonId = 1;
 
     public static HomeFragment getInstance(int catId) {
         HomeFragment fragment = new HomeFragment();
@@ -51,12 +52,12 @@ public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
         View view = inflater.inflate(R.layout.dm_fragment_dynamic, container, false);
         activity = getActivity();
         initView(view);
-        loadData();
+        loadData(property.getCatId(), AppPreference.getSeason());
         return view;
     }
 
-    private void loadData() {
-        getDataFromServer();
+    public void loadData(int catId, int seasonId) {
+        getDataFromServer(catId, seasonId);
     }
 
 
@@ -78,7 +79,7 @@ public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
             swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    loadData();
+                    loadData(AppPreference.getGender(), AppPreference.getSeason());
                 }
             });
         }
@@ -88,8 +89,8 @@ public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
         ClassUtil.onItemClicked(activity, property, category, item);
     }
 
-    private void getDataFromServer() {
-        AppDataManager.get(activity).getAppDataUser(property.getCatId(), seasonId, new DynamicCallback.Listener<List<CategoryModel>>() {
+    private void getDataFromServer(int genderId, int seasonId) {
+        AppDataManager.get(activity).getAppDataUser(genderId, seasonId, new DynamicCallback.Listener<List<CategoryModel>>() {
             @Override
             public void onSuccess(List<CategoryModel> response) {
                 showProgress(false);

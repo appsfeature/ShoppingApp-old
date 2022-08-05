@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ContentModel extends DMContent implements Serializable {
 
@@ -50,6 +51,9 @@ public class ContentModel extends DMContent implements Serializable {
     @SerializedName("publication_status")
     @Expose
     public String publicationStatus;
+    @SerializedName("variants")
+    @Expose
+    public List<VariantsModel> variants;
 
     public int getCategoryId() {
         return categoryId;
@@ -163,5 +167,13 @@ public class ContentModel extends DMContent implements Serializable {
 
     public void setPublicationStatus(String publicationStatus) {
         this.publicationStatus = publicationStatus;
+    }
+
+    public List<VariantsModel> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<VariantsModel> variants) {
+        this.variants = variants;
     }
 }

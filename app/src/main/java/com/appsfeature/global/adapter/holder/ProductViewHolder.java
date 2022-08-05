@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
 import com.appsfeature.global.model.ContentModel;
+import com.google.gson.reflect.TypeToken;
 import com.helper.util.BaseUtil;
+import com.helper.util.GsonParser;
 import com.squareup.picasso.Picasso;
 
 public class ProductViewHolder extends RecyclerView.ViewHolder{
@@ -44,7 +46,7 @@ public class ProductViewHolder extends RecyclerView.ViewHolder{
         }
 
         if (ivIcon != null) {
-            String imagePath = getUrl(imageUrl, item.getImage());
+            String imagePath = getImageUrlFromJson(imageUrl, item.getImage());
             int placeHolder = R.drawable.ic_placeholder_icon;
             if (BaseUtil.isValidUrl(imagePath)) {
                 Picasso.get().load(imagePath)
@@ -56,10 +58,20 @@ public class ProductViewHolder extends RecyclerView.ViewHolder{
         }
     }
 
-    protected String getUrl(String imageUrl, String appImage) {
-        if (TextUtils.isEmpty(appImage) || BaseUtil.isValidUrl(appImage)) {
-            return appImage;
+    private String getImageUrlFromJson(String imageUrl, String appImage) {
+        if (!TextUtils.isEmpty(appImage)) {
+            if(BaseUtil.isValidUrl(appImage)) {
+                return imageUrl + appImage;
+            }else if(appImage.startsWith("[")) {
+                String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
+                });
+                if(images != null && images.length > 0) {
+                    return imageUrl + images[0];
+                }else {
+                    return null;
+                }
+            }
         }
-        return imageUrl + appImage;
+        return appImage;
     }
 }

@@ -16,6 +16,10 @@ public class AppBaseModel implements Serializable {
     @Expose
     private List<ContentModel> productList;
 
+    @SerializedName("product_view")
+    @Expose
+    private ContentModel productView;
+
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
@@ -42,5 +46,13 @@ public class AppBaseModel implements Serializable {
 
     public void setProductList(List<ContentModel> productList) {
         this.productList = productList;
+    }
+
+    public ContentModel getProductView() {
+        return productView;
+    }
+
+    public void setProductView(ContentModel productView) {
+        this.productView = productView;
     }
 }

@@ -20,10 +20,15 @@ import com.appsfeature.global.R;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
+import com.appsfeature.global.util.CircleTransform;
 import com.dynamic.adapter.BaseDynamicChildAdapter;
 import com.dynamic.adapter.holder.base.BaseCommonHolder;
+import com.dynamic.listeners.DMContentType;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMContent;
+import com.google.gson.reflect.TypeToken;
+import com.helper.util.BaseUtil;
+import com.helper.util.GsonParser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -38,10 +43,12 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
     @Override
     @NonNull
     public RecyclerView.ViewHolder onCreateViewHolderDynamic(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == CategoryType.TYPE_VIDEO){
-            return new VideoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_video_play_list, parent, false));
+        if(viewType == CategoryType.TYPE_VIDEO_PRODUCT){
+            return new VideoProductViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_video_play_list, parent, false));
         }else if(viewType == CategoryType.TYPE_SUB_CATEGORY){
             return new CommonChildHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_sub_category, parent, false));
+        }else if(viewType == CategoryType.TYPE_PRODUCT){
+            return new ProductHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_home_product, parent, false));
         }else {
             return new CommonChildHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_slot_list_card_view, parent, false));
         }
@@ -49,8 +56,11 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
 
     @Override
     public void onBindViewHolderDynamic(@NonNull final RecyclerView.ViewHolder viewHolder, int position) {
-        if (viewHolder instanceof VideoViewHolder) {
-            VideoViewHolder holder = (VideoViewHolder) viewHolder;
+        if (viewHolder instanceof VideoProductViewHolder) {
+            VideoProductViewHolder holder = (VideoProductViewHolder) viewHolder;
+            holder.setData(mList.get(position), position);
+        } else if (viewHolder instanceof ProductHolder) {
+            ProductHolder holder = (ProductHolder) viewHolder;
             holder.setData(mList.get(position), position);
         } else if (viewHolder instanceof CommonChildHolder) {// this viewHolder is always on the bottom
             CommonChildHolder<ContentModel> holder = (CommonChildHolder) viewHolder;
@@ -58,22 +68,46 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
         }
     }
 
-    public class AppViewHolder extends BaseCommonHolder<CategoryModel> implements View.OnClickListener{
-        protected final ImageView ivImage;
-        protected final TextView tvTitle;
-        protected final Button btnLogin;
+    public class ProductHolder extends BaseCommonHolder<CategoryModel> implements View.OnClickListener{
+        protected final ImageView ivIcon;
 
-        AppViewHolder(View view) {
+        ProductHolder(View view) {
             super(view);
-            ivImage = view.findViewById(R.id.iv_image);
-            tvTitle = view.findViewById(R.id.tv_title);
-            btnLogin = view.findViewById(R.id.btn_login);
-            btnLogin.setOnClickListener(this);
+            ivIcon = view.findViewById(R.id.iv_icon);
+            itemView.setOnClickListener(this);
         }
         public void setData(DMContent item, int position) {
-            ivImage.setImageResource(item.getVisibility());
             tvTitle.setText(item.getTitle());
-            btnLogin.setText(item.getDescription());
+
+            if (ivIcon != null) {
+                String imagePath = getImageUrlFromJson(item.getImage());
+                int placeHolder = getPlaceHolder();
+                if (BaseUtil.isValidUrl(imagePath)) {
+                    Picasso.get().load(imagePath)
+                            .transform(new CircleTransform())
+                            .placeholder(placeHolder)
+                            .into(ivIcon);
+                } else {
+                    ivIcon.setImageResource(placeHolder);
+                }
+            }
+        }
+
+        private String getImageUrlFromJson(String appImage) {
+            if (!TextUtils.isEmpty(appImage)) {
+                if(BaseUtil.isValidUrl(appImage)) {
+                    return imageUrl + appImage;
+                }else if(appImage.startsWith("[")) {
+                    String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
+                    });
+                    if(images != null && images.length > 0) {
+                        return imageUrl + images[0];
+                    }else {
+                        return null;
+                    }
+                }
+            }
+            return appImage;
         }
 
         @Override
@@ -84,11 +118,11 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
         }
     }
 
-    public class VideoViewHolder extends CommonChildHolder<ContentModel> implements View.OnClickListener {
+    public class VideoProductViewHolder extends CommonChildHolder<ContentModel> implements View.OnClickListener {
         public final TextView tvWatchTime;
         public final ProgressBar progressBar;
 
-        public VideoViewHolder(View v) {
+        public VideoProductViewHolder(View v) {
             super(v);
             cardView = v.findViewById(R.id.card_view);
             ivIcon = v.findViewById(R.id.iv_icon);
@@ -101,13 +135,13 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
             if (!TextUtils.isEmpty(item.getVideoUrl())) {
                 String videoPreviewUrl = getYoutubePlaceholderImage(getVideoIdFromUrl(item.getVideoUrl()));
                 Picasso.get().load(videoPreviewUrl)
-                        .placeholder(R.drawable.ic_yt_placeholder)
-                        .error(R.drawable.ic_yt_placeholder)
+                        .placeholder(R.drawable.play_logo_screenshot)
+                        .error(R.drawable.play_logo_screenshot)
                         .into(ivIcon);
                 ivIcon.setVisibility(View.VISIBLE);
             } else {
                 if (TextUtils.isEmpty(item.getImage())) {
-                    ivIcon.setImageResource(R.drawable.ic_yt_placeholder);
+                    ivIcon.setImageResource(R.drawable.play_logo_screenshot);
                 }
             }
             if (cardView != null && cardView instanceof CardView) {

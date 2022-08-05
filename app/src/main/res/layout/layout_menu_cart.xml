@@ -7,7 +7,7 @@
 
     <RelativeLayout
         android:id="@+id/rl_menu_imp_update"
-        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_width="35dp"
         android:layout_height="35dp">
 
@@ -15,11 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_notifications"
+            android:src="@drawable/ic_menu_cart"
             app:tint="@android:color/white" />
 
         <TextView
-            android:id="@+id/tv_menu_notification"
+            android:id="@+id/tv_menu_cart"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_alignParentRight="true"

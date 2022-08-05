@@ -142,7 +142,7 @@ public class AppApplication extends BaseApplication {
         if ( onNotificationReceivedArrayList.size() > 0 ){
             for ( NotificationReceivedCallback notificationReceived : onNotificationReceivedArrayList ){
                 if ( notificationReceived != null ){
-                    notificationReceived.onNotificationReceived();
+                    notificationReceived.updateMenuItems();
                 }
             }
         }

@@ -16,9 +16,12 @@ import androidx.core.view.GravityCompat;
 import com.appsfeature.global.AppApplication;
 import com.appsfeature.global.AppDesign;
 import com.appsfeature.global.R;
+import com.appsfeature.global.dialog.AppDialog;
+import com.appsfeature.global.listeners.GenderType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.onesignal.NotificationReceivedCallback;
 import com.appsfeature.global.onesignal.NotificationCacheManager;
+import com.appsfeature.global.util.AppPreference;
 import com.appsfeature.global.util.ClassUtil;
 import com.appsfeature.global.util.DynamicUrlCreator;
 import com.dynamic.listeners.DynamicCallback;
@@ -32,7 +35,7 @@ import java.util.Locale;
 public class MainActivity extends BaseInAppUpdateImmediateActivity implements DynamicCallback.OnDynamicListListener, NotificationReceivedCallback {
 
     private AppDesign appDesign;
-    private TextView tvNotificationCount;
+    private TextView tvCartCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,29 +81,41 @@ public class MainActivity extends BaseInAppUpdateImmediateActivity implements Dy
         }
     }
 
+    private MenuItem menuItemFilter;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
-
-        View view = menu.findItem(R.id.menu_item_notification).getActionView();
+        menuItemFilter = menu.findItem(R.id.menu_item_filter);
+        final MenuItem menuItemCart = menu.findItem(R.id.menu_item_cart);
+        View view = menuItemCart.getActionView();
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, NotificationActivity.class));
+                onOptionsItemSelected(menuItemCart);
             }
         });
-        tvNotificationCount = view.findViewById(R.id.tv_menu_notification);
-        onNotificationReceived();
+        tvCartCount = view.findViewById(R.id.tv_menu_cart);
+        updateMenuItems();
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == R.id.menu_item_filter) {
+            AppDialog.openFilterHome(this, new Response.Status<Boolean>() {
+                @Override
+                public void onSuccess(Boolean response) {
+                    appDesign.reloadHomeData();
+                    updateMenuItems();
+                }
+            });
+        } else if (item.getItemId() == R.id.menu_item_cart) {
+            startActivity(new Intent(MainActivity.this, CartActivity.class));
+        } else if (item.getItemId() == android.R.id.home) {
             if (appDesign != null && appDesign.drawerLayout != null) {
-                appDesign.drawerLayout.openDrawer(GravityCompat.START);
+                appDesign.drawerLayout.openDrawer(GravityCompat.END);
             }
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -138,23 +153,30 @@ public class MainActivity extends BaseInAppUpdateImmediateActivity implements Dy
     @Override
     protected void onResume() {
         super.onResume();
-        onNotificationReceived();
+        updateMenuItems();
     }
 
     @Override
-    public void onNotificationReceived() {
-        if (tvNotificationCount != null) {
+    public void updateMenuItems() {
+        if (tvCartCount != null) {
             NotificationCacheManager.getNotificationUnReadCount(this, new Response.Status<Integer>() {
                 @Override
                 public void onSuccess(Integer count) {
                     if (count > 0) {
-                        tvNotificationCount.setText(String.format(Locale.ENGLISH, "%d", count));
-                        tvNotificationCount.setVisibility(View.VISIBLE);
+                        tvCartCount.setText(String.format(Locale.ENGLISH, "%d", count));
+                        tvCartCount.setVisibility(View.VISIBLE);
                     } else {
-                        tvNotificationCount.setVisibility(View.GONE);
+                        tvCartCount.setVisibility(View.GONE);
                     }
                 }
             });
+        }
+        if(menuItemFilter != null){
+            if(AppPreference.getGender() == GenderType.TYPE_GIRL){
+                menuItemFilter.setIcon(R.drawable.ic_menu_female);
+            }else {
+                menuItemFilter.setIcon(R.drawable.ic_menu_male);
+            }
         }
     }
 }

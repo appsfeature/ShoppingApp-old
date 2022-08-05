@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
-import com.appsfeature.global.adapter.NotificationAdapter;
+import com.appsfeature.global.adapter.app.NotificationAdapter;
 import com.appsfeature.global.model.NotificationItem;
 import com.appsfeature.global.onesignal.NotificationCacheManager;
 import com.appsfeature.global.util.SupportUtil;

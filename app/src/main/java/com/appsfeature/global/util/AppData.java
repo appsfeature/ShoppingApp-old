@@ -2,7 +2,6 @@ package com.appsfeature.global.util;
 
 import com.appsfeature.global.AppValues;
 import com.appsfeature.global.R;
-import com.appsfeature.global.activity.MainActivity;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.listeners.LoginType;
 import com.appsfeature.global.network.ApiEndPoint;
@@ -62,7 +61,7 @@ public class AppData {
         item = new DMCategory();
         item.setRanking(3);
         item.setCatId(2);
-        item.setItemType(CategoryType.TYPE_VIDEO);
+        item.setItemType(CategoryType.TYPE_VIDEO_PRODUCT);
         item.setSubCatId(AppValues.DASHBOARD_ID);
         item.setChildList(new ArrayList<>());
 

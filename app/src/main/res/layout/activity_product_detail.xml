@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/view_main"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_bar"
@@ -14,13 +17,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/iv_icon"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_dm_placeholder_graphic" />
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/view_pager"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dm_height_view_pager"
+                    android:layout_marginTop="8dp"/>
+
+                <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
+                    android:id="@+id/indicator_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:dotsColor="@color/colorPrimary"
+                    app:dotsStrokeColor="@color/colorAccent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    app:dotsCornerRadius="8dp"
+                    android:visibility="gone"
+                    app:dotsSize="10dp"
+                    app:dotsSpacing="4dp"
+                    app:dotsStrokeWidth="2dp" />
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -46,6 +69,13 @@
                     android:text="Price"
                     android:textColor="@color/themeTextColor"
                     android:textSize="14sp" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -75,6 +105,8 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <include layout="@layout/base_layout_no_data2"/>
+
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
@@ -100,4 +132,5 @@
             android:textAllCaps="false"/>
 
     </LinearLayout>
+
 </RelativeLayout>

@@ -8,25 +8,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.appsfeature.global.adapter.ProductAdapter;
-import com.appsfeature.global.model.CategoryModel;
+import com.appsfeature.global.adapter.app.ProductAdapter;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.ClassUtil;
 import com.dynamic.R;
-import com.dynamic.fragment.base.DMBaseFragment;
 import com.dynamic.fragment.base.DMBaseGenericFragment;
 import com.dynamic.listeners.DynamicCallback;
-import com.dynamic.util.DMUtility;
 import com.helper.callback.Response;
 import com.helper.util.BaseUtil;
-import com.helper.widget.ItemDecorationCardMargin;
-import com.helper.widget.ItemDecorationMargin;
 import com.helper.widget.RecyclerViewCardMarginGrid;
 
 import java.util.ArrayList;
@@ -60,7 +54,7 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         layoutNoData = view.findViewById(R.id.ll_no_data);
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         rvList = view.findViewById(R.id.recycler_view);
-        rvList.addItemDecoration(new RecyclerViewCardMarginGrid(2, 8, true));
+        rvList.addItemDecoration(new RecyclerViewCardMarginGrid(2, 16, true));
         rvList.setLayoutManager(new GridLayoutManager(activity, 2));
         adapter = new ProductAdapter(activity, mList, new Response.OnClickListener<ContentModel>() {
             @Override

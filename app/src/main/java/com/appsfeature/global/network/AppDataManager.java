@@ -1,22 +1,28 @@
 package com.appsfeature.global.network;
 
 import android.content.Context;
-import android.text.TextUtils;
 
+import com.appsfeature.global.listeners.AttributeType;
+import com.appsfeature.global.model.AttributeModel;
 import com.appsfeature.global.model.CategoryModel;
+import com.appsfeature.global.model.ColorModel;
 import com.appsfeature.global.model.ContentModel;
+import com.appsfeature.global.model.ProductDetail;
+import com.appsfeature.global.model.VariantsModel;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMCategory;
-import com.dynamic.model.DMContent;
 import com.dynamic.util.DMBaseSorting;
 import com.helper.callback.Response;
+import com.helper.task.TaskRunner;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class AppDataManager extends DMBaseSorting {
     private static AppDataManager instance;
@@ -80,6 +86,25 @@ public class AppDataManager extends DMBaseSorting {
         });
     }
 
+    public void getAppProductDetails(int productId, DynamicCallback.Listener<ContentModel> callback) {
+        networkManager.getAppProductDetails(productId, new DynamicCallback.Listener<ContentModel>() {
+            @Override
+            public void onSuccess(ContentModel response) {
+                callback.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
+            }
+        });
+    }
+
     private List<CategoryModel> arraySortAppCategory(List<CategoryModel> list) {
         return arraySortAppCategory(list, true);
     }
@@ -113,5 +138,59 @@ public class AppDataManager extends DMBaseSorting {
             }
         });
         return list;
+    }
+
+    public void processAdditionalAttributes(ArrayList<ColorModel> colorsList, List<VariantsModel> variants, Response.Status<HashMap<String, List<ProductDetail>>> callback) {
+        if(variants != null && variants.size() > 0){
+            HashMap<String, List<ProductDetail>> productDetailHashMap = new HashMap<>();
+            ArrayList<ProductDetail> variantsList = new ArrayList<>();
+            colorsList.clear();
+            callback.onProgressUpdate(true);
+            TaskRunner.getInstance().executeAsync(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    addingAttributesList();
+                    mappingAttributesDetails();
+                    for (Map.Entry<String, List<ProductDetail>> entry : productDetailHashMap.entrySet()) {
+                      colorsList.add(new ColorModel(entry.getKey(), entry.getValue()));
+                    }
+                    return true;
+                }
+
+                private void mappingAttributesDetails() {
+                    for (ProductDetail item : variantsList) {
+                        if (productDetailHashMap.get(item.getColor()) == null) {
+                            productDetailHashMap.put(item.getColor(), new ArrayList<>());
+                        }
+                        List<ProductDetail> detailList = productDetailHashMap.get(item.color);
+                        if (detailList != null) detailList.add(item);
+                    }
+                }
+
+                private void addingAttributesList() {
+                    for (VariantsModel item : variants) {
+                        ProductDetail detail = new ProductDetail()
+                                .setPrice(item.price)
+                                .setImages(item.images);
+                        if (item.getOptions() != null) {
+                            for (AttributeModel option : item.getOptions()) {
+                                if (option.getAttributeName().equalsIgnoreCase(AttributeType.Color)) {
+                                    detail.setColor(option.getAttributesValue());
+                                } else if (option.getAttributeName().equalsIgnoreCase(AttributeType.Size)) {
+                                    detail.setSize(option.getAttributesValue());
+                                }
+                            }
+                        }
+                        variantsList.add(detail);
+                    }
+                }
+            }, new TaskRunner.Callback<Boolean>() {
+                @Override
+                public void onComplete(Boolean result) {
+                    callback.onProgressUpdate(false);
+                    callback.onSuccess(productDetailHashMap);
+                }
+            });
+        }
     }
 }
