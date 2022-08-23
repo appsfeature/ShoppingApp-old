@@ -11,12 +11,23 @@ public class VariantsModel implements Serializable {
     @SerializedName("price")
     @Expose
     public int price;
+    @SerializedName("quantity")
+    @Expose
+    public int quantity;
     @SerializedName("images")
     @Expose
     public String images;
     @SerializedName("options")
     @Expose
     public List<AttributeModel> options;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public int getPrice() {
         return price;

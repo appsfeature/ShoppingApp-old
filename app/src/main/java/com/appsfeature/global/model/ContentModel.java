@@ -54,6 +54,9 @@ public class ContentModel extends DMContent implements Serializable {
     @SerializedName("variants")
     @Expose
     public List<VariantsModel> variants;
+    @SerializedName("product_detail")
+    @Expose
+    public ProductDetail productDetail;
 
     public int getCategoryId() {
         return categoryId;
@@ -175,5 +178,13 @@ public class ContentModel extends DMContent implements Serializable {
 
     public void setVariants(List<VariantsModel> variants) {
         this.variants = variants;
+    }
+
+    public ProductDetail getProductDetail() {
+        return productDetail;
+    }
+
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
     }
 }

@@ -1,6 +1,7 @@
 package com.appsfeature.global.adapter;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,9 +18,11 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
+import com.appsfeature.global.adapter.holder.CartViewHolder;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
+import com.appsfeature.global.util.AppCartMaintainer;
 import com.appsfeature.global.util.CircleTransform;
 import com.dynamic.adapter.BaseDynamicChildAdapter;
 import com.dynamic.adapter.holder.base.BaseCommonHolder;
@@ -27,17 +30,20 @@ import com.dynamic.listeners.DMContentType;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMContent;
 import com.google.gson.reflect.TypeToken;
+import com.helper.callback.Response;
 import com.helper.util.BaseUtil;
 import com.helper.util.GsonParser;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, ContentModel> {
+public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, ContentModel> implements CartViewHolder.RemoveListener {
 
+    private final Activity activity;
 
-    public HomeChildAdapter(Context context, int itemType, CategoryModel category, List<ContentModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> clickListener) {
+    public HomeChildAdapter(Activity context, int itemType, CategoryModel category, List<ContentModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> clickListener) {
         super(context, itemType, category, mList, clickListener);
+        this.activity = context;
     }
 
     @Override
@@ -49,7 +55,11 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
             return new CommonChildHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_sub_category, parent, false));
         }else if(viewType == CategoryType.TYPE_PRODUCT){
             return new ProductHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_home_product, parent, false));
-        }else {
+        } else if(viewType == CategoryType.TYPE_CART_VIEW){
+            return new CartViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_cart_view, parent, false), this);
+        } else if(viewType == CategoryType.TYPE_PRODUCT_DETAIL){
+            return new CommonChildHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.slot_slider_product, parent, false));
+        } else {
             return new CommonChildHolder<>(LayoutInflater.from(parent.getContext()).inflate(R.layout.dm_slot_list_card_view, parent, false));
         }
     }
@@ -62,10 +72,30 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
         } else if (viewHolder instanceof ProductHolder) {
             ProductHolder holder = (ProductHolder) viewHolder;
             holder.setData(mList.get(position), position);
+        } else if (viewHolder instanceof CartViewHolder) {
+            CartViewHolder holder = (CartViewHolder) viewHolder;
+            holder.setData(activity, mList.get(position), imageUrl);
         } else if (viewHolder instanceof CommonChildHolder) {// this viewHolder is always on the bottom
             CommonChildHolder<ContentModel> holder = (CommonChildHolder) viewHolder;
             holder.setData(mList.get(position), position);
         }
+    }
+
+    @Override
+    public void onItemRemove(int position) {
+        AppCartMaintainer.removeCartItem(context, mList.get(position).getTitle(), new Response.Status<Boolean>() {
+            @Override
+            public void onSuccess(Boolean response) {
+                mList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(0, mList.size());
+            }
+        });
+    }
+
+    @Override
+    public void onItemSaveForLater(int position) {
+
     }
 
     public class ProductHolder extends BaseCommonHolder<CategoryModel> implements View.OnClickListener{
@@ -80,7 +110,7 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
             tvTitle.setText(item.getTitle());
 
             if (ivIcon != null) {
-                String imagePath = getImageUrlFromJson(item.getImage());
+                String imagePath = getImageUrlFromJson(imageUrl, item.getImage());
                 int placeHolder = getPlaceHolder();
                 if (BaseUtil.isValidUrl(imagePath)) {
                     Picasso.get().load(imagePath)
@@ -93,18 +123,21 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
             }
         }
 
-        private String getImageUrlFromJson(String appImage) {
+        private String getImageUrlFromJson(String imageUrl, String appImage) {
             if (!TextUtils.isEmpty(appImage)) {
-                if(BaseUtil.isValidUrl(appImage)) {
-                    return imageUrl + appImage;
-                }else if(appImage.startsWith("[")) {
+                String mImage = appImage;
+                if(appImage.startsWith("[")) {
                     String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
                     });
                     if(images != null && images.length > 0) {
-                        return imageUrl + images[0];
-                    }else {
-                        return null;
+                        mImage =  images[0];
                     }
+                }
+
+                if(BaseUtil.isValidUrl(mImage)) {
+                    return mImage;
+                }else {
+                    return imageUrl + appImage;
                 }
             }
             return appImage;

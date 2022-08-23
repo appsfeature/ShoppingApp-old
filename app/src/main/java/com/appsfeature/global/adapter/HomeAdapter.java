@@ -1,5 +1,6 @@
 package com.appsfeature.global.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +25,11 @@ import java.util.List;
 
 public class HomeAdapter extends BaseDynamicAdapter<CategoryModel, ContentModel> {
 
-    public HomeAdapter(Context context, List<CategoryModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> listener) {
+    private final Activity activity;
+
+    public HomeAdapter(Activity context, List<CategoryModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> listener) {
         super(context, mList, DMFlingType.None, listener);
+        this.activity = context;
     }
 
     @Override
@@ -55,7 +59,7 @@ public class HomeAdapter extends BaseDynamicAdapter<CategoryModel, ContentModel>
 
     @Override
     protected <T1, T2> RecyclerView.Adapter<RecyclerView.ViewHolder> getDynamicChildAdapter(int itemType, T1 category, List<T2> childList) {
-        return new HomeChildAdapter(context, itemType, (CategoryModel) category, (List<ContentModel>) childList, listener);
+        return new HomeChildAdapter(activity, itemType, (CategoryModel) category, (List<ContentModel>) childList, listener);
     }
 
 

@@ -18,5 +18,5 @@ dependencyResolutionManagement {
         mavenLocal()
     }
 }
-rootProject.name='ShoppingApp'
+rootProject.name='DemoApp'
 include ':app'

@@ -5,22 +5,20 @@ import android.text.TextUtils;
 import java.io.Serializable;
 import java.util.List;
 
-public class ColorModel implements Serializable {
+public class SizeModel implements Serializable {
 
-    private String title;
+    private int size;
+
+    private boolean isChecked;
 
     private List<ProductDetail> list;
 
-    public ColorModel() {
+    public SizeModel() {
     }
 
-    public ColorModel(String title, List<ProductDetail> list) {
-        this.title = title;
+    public SizeModel(int size, List<ProductDetail> list) {
+        this.size = size;
         this.list = list;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public String getImage() {
@@ -34,8 +32,21 @@ public class ColorModel implements Serializable {
         return null;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public List<ProductDetail> getList() {

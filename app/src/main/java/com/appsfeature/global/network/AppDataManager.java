@@ -5,15 +5,17 @@ import android.content.Context;
 import com.appsfeature.global.listeners.AttributeType;
 import com.appsfeature.global.model.AttributeModel;
 import com.appsfeature.global.model.CategoryModel;
-import com.appsfeature.global.model.ColorModel;
+import com.appsfeature.global.model.SizeModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ProductDetail;
 import com.appsfeature.global.model.VariantsModel;
+import com.appsfeature.global.util.SupportUtil;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMCategory;
 import com.dynamic.util.DMBaseSorting;
 import com.helper.callback.Response;
 import com.helper.task.TaskRunner;
+import com.helper.util.BaseUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -140,29 +142,29 @@ public class AppDataManager extends DMBaseSorting {
         return list;
     }
 
-    public void processAdditionalAttributes(ArrayList<ColorModel> colorsList, List<VariantsModel> variants, Response.Status<HashMap<String, List<ProductDetail>>> callback) {
+    public void processAdditionalAttributes(ArrayList<SizeModel> sizeList, List<VariantsModel> variants, Response.Status<HashMap<Integer, List<ProductDetail>>> callback) {
         if(variants != null && variants.size() > 0){
-            HashMap<String, List<ProductDetail>> productDetailHashMap = new HashMap<>();
+            HashMap<Integer, List<ProductDetail>> productDetailHashMap = new HashMap<>();
             ArrayList<ProductDetail> variantsList = new ArrayList<>();
-            colorsList.clear();
+            sizeList.clear();
             callback.onProgressUpdate(true);
             TaskRunner.getInstance().executeAsync(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     addingAttributesList();
                     mappingAttributesDetails();
-                    for (Map.Entry<String, List<ProductDetail>> entry : productDetailHashMap.entrySet()) {
-                      colorsList.add(new ColorModel(entry.getKey(), entry.getValue()));
+                    for (Map.Entry<Integer, List<ProductDetail>> entry : productDetailHashMap.entrySet()) {
+                      sizeList.add(new SizeModel(entry.getKey(), entry.getValue()));
                     }
                     return true;
                 }
 
                 private void mappingAttributesDetails() {
                     for (ProductDetail item : variantsList) {
-                        if (productDetailHashMap.get(item.getColor()) == null) {
-                            productDetailHashMap.put(item.getColor(), new ArrayList<>());
+                        if (productDetailHashMap.get(item.getSize()) == null) {
+                            productDetailHashMap.put(item.getSize(), new ArrayList<>());
                         }
-                        List<ProductDetail> detailList = productDetailHashMap.get(item.color);
+                        List<ProductDetail> detailList = productDetailHashMap.get(item.getSize());
                         if (detailList != null) detailList.add(item);
                     }
                 }
@@ -171,13 +173,14 @@ public class AppDataManager extends DMBaseSorting {
                     for (VariantsModel item : variants) {
                         ProductDetail detail = new ProductDetail()
                                 .setPrice(item.price)
+                                .setQuantity(item.quantity)
                                 .setImages(item.images);
                         if (item.getOptions() != null) {
                             for (AttributeModel option : item.getOptions()) {
                                 if (option.getAttributeName().equalsIgnoreCase(AttributeType.Color)) {
                                     detail.setColor(option.getAttributesValue());
                                 } else if (option.getAttributeName().equalsIgnoreCase(AttributeType.Size)) {
-                                    detail.setSize(option.getAttributesValue());
+                                    detail.setSize(SupportUtil.parseInt(option.getAttributesValue()));
                                 }
                             }
                         }

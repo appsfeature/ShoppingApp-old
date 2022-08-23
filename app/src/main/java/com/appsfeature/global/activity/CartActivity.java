@@ -13,10 +13,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
+import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.NotificationAdapter;
+import com.appsfeature.global.listeners.CategoryType;
+import com.appsfeature.global.model.CategoryModel;
+import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.NotificationItem;
 import com.appsfeature.global.onesignal.NotificationCacheManager;
+import com.appsfeature.global.util.AppCartMaintainer;
 import com.appsfeature.global.util.SupportUtil;
+import com.dynamic.listeners.DMCategoryType;
+import com.dynamic.listeners.DMContentType;
+import com.dynamic.listeners.DynamicCallback;
+import com.dynamic.model.DMContent;
 import com.helper.callback.Response;
 import com.helper.task.TaskRunner;
 import com.helper.util.BaseUtil;
@@ -29,8 +38,8 @@ import java.util.List;
 public class CartActivity extends AppCompatActivity {
 
     private View llNoData;
-    private NotificationAdapter adapter;
-    private final List<NotificationItem> mList = new ArrayList<>();
+    private HomeChildAdapter adapter;
+    private final List<ContentModel> mList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,9 +57,9 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        NotificationCacheManager.getNotificationList(this, new Response.Status<List<NotificationItem>>() {
+        AppCartMaintainer.getCartList(this, new Response.Status<List<ContentModel>>() {
             @Override
-            public void onSuccess(List<NotificationItem> response) {
+            public void onSuccess(List<ContentModel> response) {
                 onUpdateUI(response);
             }
         });
@@ -60,36 +69,17 @@ public class CartActivity extends AppCompatActivity {
     public void onInitializeUI() {
         llNoData = findViewById(R.id.ll_no_data);
         RecyclerView rvList = findViewById(R.id.recycler_view);
-        rvList.addItemDecoration(new ItemDecorationCardMargin(this));
         rvList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        adapter = new NotificationAdapter(mList, new Response.OnListClickListener<NotificationItem>() {
+        adapter = new HomeChildAdapter(this, CategoryType.TYPE_CART_VIEW, new CategoryModel(), mList, new DynamicCallback.OnClickListener<CategoryModel, ContentModel>() {
             @Override
-            public void onItemClicked(View view, NotificationItem item) {
-                NotificationCacheManager.updateReadStatus(CartActivity.this, item.getUuid());
-                SupportUtil.onNotificationClicked(CartActivity.this, item);
-            }
+            public void onItemClicked(View v, CategoryModel category, ContentModel item) {
 
-            @Override
-            public void onDeleteClicked(View view, int position, NotificationItem item) {
-                NotificationCacheManager.removeItem(CartActivity.this, item.getUuid(), new TaskRunner.Callback<Boolean>() {
-                    @Override
-                    public void onComplete(Boolean result) {
-                        if (position >= 0 && position < mList.size()) {
-                            mList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, mList.size());
-                            if(mList.size() == 0){
-                                BaseUtil.showNoData(llNoData, View.VISIBLE);
-                            }
-                        }
-                    }
-                });
             }
         });
         rvList.setAdapter(adapter);
     }
 
-    public void onUpdateUI(List<NotificationItem> response) {
+    public void onUpdateUI(List<ContentModel> response) {
         SupportUtil.showNoData(llNoData, View.GONE);
         llNoData.setVisibility(View.GONE);
         mList.clear();

@@ -162,22 +162,40 @@ public class SupportUtil extends BaseUtil {
     public static String[] getImageUrlFromJson(String appImage) {
         if (!TextUtils.isEmpty(appImage)) {
             String baseUrl = AppPreference.getImageUrl();
-            if(BaseUtil.isValidUrl(appImage)) {
-                return new String[]{baseUrl + appImage};
-            }else if(appImage.startsWith("[")) {
+            if(appImage.startsWith("[")) {
                 String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
                 });
                 if(images != null && images.length > 0) {
                     String[] imageUrls = new String[images.length];
                     for (int i = 0; i < images.length; i++) {
-                        imageUrls[i] = baseUrl + images[i];
+                        if(BaseUtil.isValidUrl(images[i])) {
+                            imageUrls[i] = images[i];
+                        }else {
+                            imageUrls[i] = baseUrl + images[i];
+                        }
                     }
                     return imageUrls;
                 }else {
                     return null;
                 }
+            }else {
+                if(BaseUtil.isValidUrl(appImage)) {
+                    return new String[]{appImage};
+                }else {
+                    return new String[]{baseUrl + appImage};
+                }
             }
         }
         return null;
+    }
+
+    public static int parseInt(String value) {
+        try {
+            if(!TextUtils.isEmpty(value) && TextUtils.isDigitsOnly(value))
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

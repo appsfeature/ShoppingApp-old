@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.appsfeature.global.AppValues;
+import com.appsfeature.global.activity.CartActivity;
 import com.appsfeature.global.activity.HtmlViewerActivity;
 import com.appsfeature.global.activity.MainActivity;
 import com.appsfeature.global.activity.ProductDetailActivity;
@@ -234,5 +235,10 @@ public class ClassUtil {
         extraProperty.setContentModel(item);
         activity.startActivity(new Intent(activity, ProductDetailActivity.class)
                 .putExtra(AppConstant.CATEGORY_PROPERTY, extraProperty));
+    }
+
+
+    public static void openActivityCart(Activity activity) {
+        activity.startActivity(new Intent(activity, CartActivity.class));
     }
 }

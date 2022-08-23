@@ -1,11 +1,9 @@
 package com.appsfeature.global.activity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,41 +12,38 @@ import androidx.recyclerview.widget.SnapHelper;
 import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ColorAdapter;
-import com.appsfeature.global.adapter.app.ProductAdapter;
+import com.appsfeature.global.adapter.app.SizeAdapter;
 import com.appsfeature.global.adapter.holder.ProductViewHolder;
-import com.appsfeature.global.listeners.AttributeType;
-import com.appsfeature.global.model.AttributeModel;
+import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.model.CategoryModel;
-import com.appsfeature.global.model.ColorModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.PresenterModel;
 import com.appsfeature.global.model.ProductDetail;
-import com.appsfeature.global.model.VariantsModel;
+import com.appsfeature.global.model.SizeModel;
 import com.appsfeature.global.network.AppDataManager;
+import com.appsfeature.global.util.AppCartMaintainer;
+import com.appsfeature.global.util.ClassUtil;
 import com.appsfeature.global.util.SupportUtil;
 import com.dynamic.DynamicModule;
 import com.dynamic.adapter.holder.DMAutoSliderViewHolder;
-import com.dynamic.listeners.DMCategoryType;
 import com.dynamic.listeners.DynamicCallback;
-import com.dynamic.model.DMCategory;
-import com.dynamic.model.DMContent;
 import com.helper.callback.Response;
-import com.helper.task.TaskRunner;
 import com.helper.util.BaseAnimationUtil;
 import com.helper.util.BaseUtil;
-import com.helper.widget.RecyclerViewCardMarginGrid;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 
-public class ProductDetailActivity extends BaseActivity{
+public class ProductDetailActivity extends BaseActivity implements View.OnClickListener{
 
     private View llNoData;
     private View viewMain;
-    private RecyclerView rvColor;
+    private RecyclerView rvSize, rvColor;
+
+    private final ArrayList<SizeModel> sizesList = new ArrayList<>();
+    private final ArrayList<ProductDetail> colorsList = new ArrayList<>();
+    private ContentModel mContentDetail;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +56,10 @@ public class ProductDetailActivity extends BaseActivity{
     private void initUi() {
         llNoData = findViewById(R.id.ll_no_data);
         viewMain = findViewById(R.id.view_main);
+        rvSize = findViewById(R.id.rv_size);
         rvColor = findViewById(R.id.rv_color);
+        (findViewById(R.id.btn_add_to_cart)).setOnClickListener(this);
+        (findViewById(R.id.btn_buy_now)).setOnClickListener(this);
     }
 
     private void getDataFromServer(int productId) {
@@ -90,19 +88,17 @@ public class ProductDetailActivity extends BaseActivity{
         });
     }
 
-    private final ArrayList<ColorModel> colorsList = new ArrayList<>();
-
     private void loadUi(ContentModel response) {
+        this. mContentDetail = response;
         ProductViewHolder viewHolder = new ProductViewHolder(getWindow().getDecorView());
         String imageUrl = DynamicModule.getInstance().getImageBaseUrl(this);
         viewHolder.setData(response, imageUrl);
         updateSliderImages(response);
         BaseAnimationUtil.alphaAnimation(viewMain, View.VISIBLE);
-        AppDataManager.get(this).processAdditionalAttributes(colorsList, response.getVariants(), new Response.Status<HashMap<String, List<ProductDetail>>>() {
+        AppDataManager.get(this).processAdditionalAttributes(sizesList, response.getVariants(), new Response.Status<HashMap<Integer, List<ProductDetail>>>() {
             @Override
-            public void onSuccess(HashMap<String, List<ProductDetail>> response) {
-                Log.d("@Tester", "size: "+response.size());
-                updateColorAdapter();
+            public void onSuccess(HashMap<Integer, List<ProductDetail>> response) {
+                updateSizeAdapter();
             }
 
             @Override
@@ -133,12 +129,39 @@ public class ProductDetailActivity extends BaseActivity{
                 }
             };
             CategoryModel mCategory = new CategoryModel();
-            mCategory.setItemType(DMCategoryType.TYPE_VIEWPAGER_AUTO_SLIDER_NO_TITLE);
+            mCategory.setItemType(CategoryType.TYPE_PRODUCT_DETAIL);
             mCategory.setChildList(imagesList);
             slider.setData(mCategory, 0);
         }
     }
 
+    private void updateSizeAdapter() {
+        if(sizesList.size() > 0) {
+            rvSize.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+            if(rvSize.getOnFlingListener() == null) {
+                SnapHelper snapHelper = new PagerSnapHelper();
+                snapHelper.attachToRecyclerView(rvSize);
+            }
+            SizeAdapter adapter = new SizeAdapter(this, sizesList, new Response.OnClickListener<SizeModel>() {
+                @Override
+                public void onItemClicked(View view, SizeModel item) {
+                    updateColorAdapter(item.isChecked(), item.getList());
+                }
+            });
+            rvSize.setAdapter(adapter);
+            rvSize.setVisibility(View.VISIBLE);
+        }else {
+            rvSize.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateColorAdapter(boolean checked, List<ProductDetail> list) {
+        colorsList.clear();
+        if(checked && list != null && list.size() > 0){
+            colorsList.addAll(list);
+        }
+        updateColorAdapter();
+    }
     private void updateColorAdapter() {
         if(colorsList.size() > 0) {
             rvColor.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
@@ -146,9 +169,9 @@ public class ProductDetailActivity extends BaseActivity{
                 SnapHelper snapHelper = new PagerSnapHelper();
                 snapHelper.attachToRecyclerView(rvColor);
             }
-            ColorAdapter adapter = new ColorAdapter(this, colorsList, new Response.OnClickListener<ColorModel>() {
+            ColorAdapter adapter = new ColorAdapter(this, colorsList, new Response.OnClickListener<ProductDetail>() {
                 @Override
-                public void onItemClicked(View view, ColorModel item) {
+                public void onItemClicked(View view, ProductDetail item) {
 
                 }
             });
@@ -177,5 +200,44 @@ public class ProductDetailActivity extends BaseActivity{
     @Override
     public void onStopProgressBar() {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        if(view.getId() == R.id.btn_add_to_cart){
+            addProductToCart(false);
+        }else if(view.getId() == R.id.btn_buy_now){
+            addProductToCart(true);
+        }
+    }
+
+    private void addProductToCart(boolean isOpenCart) {
+        int selectedSize = 0;
+        ProductDetail productDetail = null;
+        for (SizeModel item : sizesList){
+            if(item.isChecked()){
+                selectedSize = item.getSize();
+            }
+        }
+        for (ProductDetail item : colorsList){
+            if(item.isChecked()){
+                productDetail = item.getClone();
+                productDetail.setSize(selectedSize);
+            }
+        }
+        if(selectedSize <= 0){
+            BaseUtil.showToast(this, "Please Select Size.");
+            return;
+        }
+        if(productDetail == null){
+            BaseUtil.showToast(this, "Please Select Color.");
+            return;
+        }
+        mContentDetail.setProductDetail(productDetail);
+        AppCartMaintainer.addOnCart(this, mContentDetail);
+        BaseUtil.showToast(this, "Product added on Cart.");
+        if(isOpenCart){
+            ClassUtil.openActivityCart(this);
+        }
     }
 }

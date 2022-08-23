@@ -25,9 +25,9 @@
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/view_pager"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dm_height_view_pager"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_width="350dp"
+                    android:layout_height="350dp"
+                    android:layout_marginTop="20dp"/>
 
                 <com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
                     android:id="@+id/indicator_view"
@@ -67,14 +67,23 @@
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="Price"
+                    android:layout_marginBottom="8dp"
                     android:textColor="@color/themeTextColor"
                     android:textSize="14sp" />
 
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:visibility="gone"/>
+
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_color"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
                     android:visibility="gone"/>
 
                 <View
@@ -115,6 +124,7 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/btn_add_to_cart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -123,6 +133,7 @@
             android:textAllCaps="false"/>
 
         <Button
+            android:id="@+id/btn_buy_now"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"

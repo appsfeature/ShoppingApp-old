@@ -111,7 +111,7 @@ public class MainActivity extends BaseInAppUpdateImmediateActivity implements Dy
                 }
             });
         } else if (item.getItemId() == R.id.menu_item_cart) {
-            startActivity(new Intent(MainActivity.this, CartActivity.class));
+            ClassUtil.openActivityCart(this);
         } else if (item.getItemId() == android.R.id.home) {
             if (appDesign != null && appDesign.drawerLayout != null) {
                 appDesign.drawerLayout.openDrawer(GravityCompat.END);

@@ -108,7 +108,7 @@ public class NetworkManager extends DMNetworkManager {
     public void getAppDataUser(int genderId, int seasonId, DynamicCallback.Listener<List<CategoryModel>> callback) {
         Map<String, String> params = new HashMap<>();
         params.put("category_id", genderId + "");
-        params.put("season_id", seasonId + "");
+//        params.put("season_id", seasonId + "");
         configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_DATA_USER, params, new NetworkCallback.Response<NetworkModel>() {
             @Override
             public void onComplete(boolean status, NetworkModel data) {

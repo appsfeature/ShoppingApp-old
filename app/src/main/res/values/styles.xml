@@ -36,6 +36,43 @@
         <item name="themeNavItemColorSelected">@color/themeNavItemColorSelected</item>
     </style>
 
+    <style name="ActivityTheme.ActionBar.Material" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="actionBarSize">@dimen/action_bar_height</item>
+        <item name="minHeight">@dimen/action_bar_height</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/themeTextColor</item>
+        <item name="android:textColorSecondary">@color/themeSecondaryTextColor</item>
+        <item name="android:editTextColor">@color/themeSecondaryTextColor</item>
+        <item name="android:editTextBackground">@android:color/transparent</item>
+        <item name="android:textColorHint">@color/themeHintColor</item>
+        <item name="android:divider">@color/themeDividerColor</item>
+        <item name="android:listDivider">@color/themeDividerColor</item>
+        <item name="android:childDivider">@color/themeDividerColor</item>
+        <item name="android:windowBackground">@color/themeWindowBackground</item>
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+        <!--        <item name="android:alertDialogStyle">@style/DialogTheme</item>-->
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+        <item name="android:autoCompleteTextViewStyle">@style/SearchAutoCompleteTextView</item>
+        <item name="autoCompleteTextViewStyle">@style/SearchAutoCompleteTextView</item>
+        <!--  Adding Custom Styles   -->
+        <item name="themeTextColor">@color/themeTextColor</item>
+        <item name="themeTitleColor">@color/themeTitleColor</item>
+        <item name="themeTextColorLite">@color/themeTextColorLite</item>
+        <item name="themeHintColor">@color/themeHintColor</item>
+        <item name="themeButtonShapeColor">@color/themeButtonShapeColor</item>
+        <item name="themeDividerColor">@color/themeDividerColor</item>
+        <item name="themeDividerColorDark">@color/themeDividerColorDark</item>
+        <item name="themeWindowBackground">@color/themeWindowBackground</item>
+        <item name="themeBackgroundCardColor">@color/themeBackgroundCardColor</item>
+        <item name="themePlaceHolderBackgroundCardColor">@color/themePlaceHolderBackgroundCardColor</item>
+        <item name="themeNavBackgroundColor">@color/themeNavBackgroundColor</item>
+        <item name="themeNavItemColor">@color/themeNavItemColor</item>
+        <item name="themeNavItemColorSelected">@color/themeNavItemColorSelected</item>
+    </style>
+
     <style name="AppTheme.Splash" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_splash</item>
         <item name="windowActionBar">false</item>
@@ -51,6 +88,26 @@
         <item name="android:textSize">21sp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textColor">#ffffff</item>
+    </style>
+
+
+    <style name="AppPopupMenuStyle" parent="@android:style/Widget.PopupMenu">
+        <item name="android:width">100dp</item>
+        <item name="android:listPreferredItemHeightSmall">30dp</item>
+        <item name="android:listPreferredItemPaddingLeft">5dp</item>
+        <item name="android:listPreferredItemPaddingRight">5dp</item>
+    </style>
+
+    <style name="PointerCardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlayPointerCardView</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlayPointerCardView" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSizeTopRight">10dp</item>
+        <item name="cornerSizeTopLeft">10dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
 </resources>

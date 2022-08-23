@@ -59,7 +59,7 @@
             android:exported="false"/>
 
         <activity android:name=".activity.CartActivity"
-            android:theme="@style/ActivityTheme.ActionBar"
+            android:theme="@style/ActivityTheme.ActionBar.Material"
             android:label="Notification"
             android:exported="false"/>
 
