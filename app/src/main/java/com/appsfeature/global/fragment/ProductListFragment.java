@@ -80,7 +80,7 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
     }
 
     private void getDataFromServer() {
-        AppDataManager.get(activity).getAppProductBySubCategory(property.getCatId(), property.getParentId(), new DynamicCallback.Listener<List<ContentModel>>() {
+        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), new DynamicCallback.Listener<List<ContentModel>>() {
             @Override
             public void onSuccess(List<ContentModel> response) {
                 showProgress(false);
