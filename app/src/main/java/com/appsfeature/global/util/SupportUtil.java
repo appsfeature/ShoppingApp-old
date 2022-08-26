@@ -189,6 +189,26 @@ public class SupportUtil extends BaseUtil {
         return null;
     }
 
+    public static String getImageUrlFromJson(String imageUrl, String appImage) {
+        if (!TextUtils.isEmpty(appImage)) {
+            String mImage = appImage;
+            if(appImage.startsWith("[")) {
+                String[] images = GsonParser.fromJson(appImage, new TypeToken<String[]>() {
+                });
+                if(images != null && images.length > 0) {
+                    mImage =  images[0];
+                }
+            }
+
+            if(BaseUtil.isValidUrl(mImage)) {
+                return mImage;
+            }else {
+                return imageUrl + appImage;
+            }
+        }
+        return appImage;
+    }
+
     public static int parseInt(String value) {
         try {
             if(!TextUtils.isEmpty(value) && TextUtils.isDigitsOnly(value))

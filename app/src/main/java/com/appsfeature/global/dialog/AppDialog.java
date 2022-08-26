@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.appsfeature.global.R;
 import com.appsfeature.global.listeners.GenderType;
@@ -99,6 +100,32 @@ public class AppDialog {
                     dismissDialog(dialog);
                 }
             });
+            dialog.findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismissDialog(dialog);
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void openSizeChart(Context context, int type) {
+        try {
+            Dialog dialog = new Dialog(context, R.style.DialogThemeFullScreen);
+            dialog.setCancelable(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+            dialog.setContentView(R.layout.dialog_size_chart);
+
+            ImageView ivImage = dialog.findViewById(R.id.iv_image);
+
+            ivImage.setImageResource(type == 2 ? R.drawable.ic_size_chart_mens : R.drawable.ic_size_chart_womens);
+
             dialog.findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

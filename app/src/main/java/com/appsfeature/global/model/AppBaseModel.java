@@ -16,6 +16,10 @@ public class AppBaseModel implements Serializable {
     @Expose
     private List<ContentModel> productList;
 
+    @SerializedName("image_slider")
+    @Expose
+    private List<ContentModel> sliderList;
+
     @SerializedName("product_view")
     @Expose
     private ContentModel productView;
@@ -23,6 +27,14 @@ public class AppBaseModel implements Serializable {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
+
+    @SerializedName("total_rows")
+    @Expose
+    private int totalRows;
+
+    @SerializedName("total_page")
+    @Expose
+    private int totalPage;
 
     public List<CategoryModel> getList() {
         return list;
@@ -54,5 +66,29 @@ public class AppBaseModel implements Serializable {
 
     public void setProductView(ContentModel productView) {
         this.productView = productView;
+    }
+
+    public List<ContentModel> getSliderList() {
+        return sliderList;
+    }
+
+    public void setSliderList(List<ContentModel> sliderList) {
+        this.sliderList = sliderList;
+    }
+
+    public int getTotalRows() {
+        return totalRows;
+    }
+
+    public void setTotalRows(int totalRows) {
+        this.totalRows = totalRows;
+    }
+
+    public int getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(int totalPage) {
+        this.totalPage = totalPage;
     }
 }

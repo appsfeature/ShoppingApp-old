@@ -1,6 +1,11 @@
 package com.appsfeature.global.adapter.holder;
 
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +19,7 @@ import com.appsfeature.global.model.ContentModel;
 import com.google.gson.reflect.TypeToken;
 import com.helper.util.BaseUtil;
 import com.helper.util.GsonParser;
+import com.helper.util.StyleUtil;
 import com.squareup.picasso.Picasso;
 
 public class ProductViewHolder extends AppBaseViewHolder{
@@ -34,7 +40,7 @@ public class ProductViewHolder extends AppBaseViewHolder{
 
     public void setData(ContentModel item, String imageUrl) {
         tvTitle.setText(BaseUtil.fromHtml(item.getTitle()));
-        tvPrice.setText("Rs." + item.getPrice());
+        tvPrice.setText(getPrice(item.getPrice(), item.getDiscountPrice()));
 
         if (tvShortDesc != null && !TextUtils.isEmpty(item.getShortDescription())) {
             tvShortDesc.setText(BaseUtil.fromHtml(item.getShortDescription()));
@@ -56,5 +62,17 @@ public class ProductViewHolder extends AppBaseViewHolder{
                 ivIcon.setImageResource(placeHolder);
             }
         }
+    }
+
+    private SpannableString getPrice(int price, int discountPrice) {
+        SpannableString spannable;
+        if(price >= discountPrice){
+            spannable = new SpannableString("MRP : Rs." + price);
+        }else {
+            spannable = new SpannableString("MRP : Rs." + price + " Rs." + discountPrice);
+            spannable.setSpan(new ForegroundColorSpan(Color.GRAY), 6, ((String.valueOf(price).length()) + 9), 0);
+            spannable.setSpan(new StrikethroughSpan(), 6, ((String.valueOf(price).length()) + 9), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        }
+        return spannable;
     }
 }

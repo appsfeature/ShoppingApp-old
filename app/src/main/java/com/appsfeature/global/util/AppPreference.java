@@ -80,6 +80,8 @@ public class AppPreference extends BasePrefUtil {
     }
 
     public static void setImageUrl(String value) {
-        setString(AppApplication.getInstance(), IMAGE_URL, value);
+        if(!TextUtils.isEmpty(value)) {
+            setString(AppApplication.getInstance(), IMAGE_URL, value);
+        }
     }
 }

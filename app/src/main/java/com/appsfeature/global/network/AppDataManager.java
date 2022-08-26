@@ -3,12 +3,14 @@ package com.appsfeature.global.network;
 import android.content.Context;
 
 import com.appsfeature.global.listeners.AttributeType;
+import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.AttributeModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.SizeModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ProductDetail;
 import com.appsfeature.global.model.VariantsModel;
+import com.appsfeature.global.util.AppPreference;
 import com.appsfeature.global.util.SupportUtil;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMCategory;
@@ -64,16 +66,12 @@ public class AppDataManager extends DMBaseSorting {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int seasonId, DynamicCallback.Listener<List<ContentModel>> callback) {
-        networkManager.getAppProductBySubCategory(catId, seasonId, new DynamicCallback.Listener<List<ContentModel>>() {
+    public void getAppProductBySubCategory(int catId, int seasonId, DynamicCallback.Listener<AppBaseModel> callback) {
+        networkManager.getAppProductBySubCategory(catId, seasonId, new DynamicCallback.Listener<AppBaseModel>() {
             @Override
-            public void onSuccess(List<ContentModel> response) {
-                callback.onValidate(arraySortAppContent(response), new Response.Status<List<ContentModel>>() {
-                    @Override
-                    public void onSuccess(List<ContentModel> response) {
-                        callback.onSuccess(response);
-                    }
-                });
+            public void onSuccess(AppBaseModel response) {
+                arraySortAppContent(response.getProductList());
+                callback.onSuccess(response);
             }
 
             @Override
@@ -182,6 +180,7 @@ public class AppDataManager extends DMBaseSorting {
                                 } else if (option.getAttributeName().equalsIgnoreCase(AttributeType.Size)) {
                                     detail.setSize(SupportUtil.parseInt(option.getAttributesValue()));
                                 }
+                                detail.setSkuCode(option.getSkuCode());
                             }
                         }
                         variantsList.add(detail);
@@ -195,5 +194,23 @@ public class AppDataManager extends DMBaseSorting {
                 }
             });
         }
+    }
+
+    public void processSliderList(List<ContentModel> sliderList, Response.Status<List<ContentModel>> callback) {
+        TaskRunner.getInstance().executeAsync(new Callable<List<ContentModel>>() {
+            @Override
+            public List<ContentModel> call() throws Exception {
+                for (ContentModel item : sliderList) {
+                    String image = SupportUtil.getImageUrlFromJson(AppPreference.getImageUrl(), item.getImage());
+                    item.setImage(image);
+                }
+                return sliderList;
+            }
+        }, new TaskRunner.Callback<List<ContentModel>>() {
+            @Override
+            public void onComplete(List<ContentModel> result) {
+                callback.onSuccess(result);
+            }
+        });
     }
 }

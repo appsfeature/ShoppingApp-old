@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.NotificationAdapter;
+import com.appsfeature.global.adapter.holder.CartViewHolder;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
@@ -40,6 +41,7 @@ public class CartActivity extends AppCompatActivity {
     private View llNoData;
     private HomeChildAdapter adapter;
     private final List<ContentModel> mList = new ArrayList<>();
+    private View llPriceDetail;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +70,7 @@ public class CartActivity extends AppCompatActivity {
 
     public void onInitializeUI() {
         llNoData = findViewById(R.id.ll_no_data);
+        llPriceDetail = findViewById(R.id.ll_price_detail);
         RecyclerView rvList = findViewById(R.id.recycler_view);
         rvList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         adapter = new HomeChildAdapter(this, CategoryType.TYPE_CART_VIEW, new CategoryModel(), mList, new DynamicCallback.OnClickListener<CategoryModel, ContentModel>() {
@@ -76,7 +79,26 @@ public class CartActivity extends AppCompatActivity {
 
             }
         });
+        adapter.setRemoveListener(new CartViewHolder.RemoveListener(){
+
+            @Override
+            public void onItemRemove(int position) {
+                showNoDataView();
+            }
+
+            @Override
+            public void onItemSaveForLater(int position) {
+
+            }
+        });
         rvList.setAdapter(adapter);
+    }
+
+    private void showNoDataView() {
+        if(mList.size() <= 0){
+            BaseUtil.showNoData(llNoData, "Cart is Empty!", View.VISIBLE);
+            llPriceDetail.setVisibility(View.GONE);
+        }
     }
 
     public void onUpdateUI(List<ContentModel> response) {
@@ -85,8 +107,9 @@ public class CartActivity extends AppCompatActivity {
         mList.clear();
         if (response!= null && response.size() > 0) {
             mList.addAll(response);
+            llPriceDetail.setVisibility(View.VISIBLE);
         } else {
-            SupportUtil.showNoData(llNoData, View.VISIBLE);
+            showNoDataView();
         }
         adapter.notifyDataSetChanged();
     }

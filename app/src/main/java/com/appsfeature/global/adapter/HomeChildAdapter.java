@@ -40,6 +40,7 @@ import java.util.List;
 public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, ContentModel> implements CartViewHolder.RemoveListener {
 
     private final Activity activity;
+    private CartViewHolder.RemoveListener removeListener;
 
     public HomeChildAdapter(Activity context, int itemType, CategoryModel category, List<ContentModel> mList, DynamicCallback.OnClickListener<CategoryModel, ContentModel> clickListener) {
         super(context, itemType, category, mList, clickListener);
@@ -89,6 +90,9 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
                 mList.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(0, mList.size());
+                if (removeListener != null) {
+                    removeListener.onItemRemove(position);
+                }
             }
         });
     }
@@ -96,6 +100,10 @@ public class HomeChildAdapter extends BaseDynamicChildAdapter<CategoryModel, Con
     @Override
     public void onItemSaveForLater(int position) {
 
+    }
+
+    public void setRemoveListener(CartViewHolder.RemoveListener removeListener) {
+        this.removeListener = removeListener;
     }
 
     public class ProductHolder extends BaseCommonHolder<CategoryModel> implements View.OnClickListener{

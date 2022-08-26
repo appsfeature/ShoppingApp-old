@@ -143,7 +143,7 @@ public class NetworkManager extends DMNetworkManager {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int subCatId, DynamicCallback.Listener<List<ContentModel>> callback) {
+    public void getAppProductBySubCategory(int catId, int subCatId, DynamicCallback.Listener<AppBaseModel> callback) {
         Map<String, String> params = new HashMap<>();
         params.put("category_id", catId + "");
         params.put("subcategory_id", subCatId + "");
@@ -160,7 +160,7 @@ public class NetworkManager extends DMNetworkManager {
                         if (entity != null && entity.getProductList() != null && entity.getProductList().size() > 0) {
                             AppPreference.setImageUrl(entity.getImageUrl());
                             DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
-                            callback.onSuccess(entity.getProductList());
+                            callback.onSuccess(entity);
                         } else {
                             callback.onFailure(new Exception(BaseConstants.NO_DATA));
                         }

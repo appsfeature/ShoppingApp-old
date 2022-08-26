@@ -28,7 +28,7 @@ android {
             applicationId "com.saintg.androidapp"
             versionCode 10
             versionName "1.1"
-            manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.dynamicapps'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
+            manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.saintg'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
         }
     }
     signingConfigs {

@@ -30,6 +30,9 @@ public class ContentModel extends DMContent implements Serializable {
     @SerializedName("price")
     @Expose
     public int price;
+    @SerializedName("discount_price")
+    @Expose
+    public int discountPrice;
     @SerializedName("quantity")
     @Expose
     public int quantity;
@@ -51,6 +54,12 @@ public class ContentModel extends DMContent implements Serializable {
     @SerializedName("publication_status")
     @Expose
     public String publicationStatus;
+    @SerializedName("product_code")
+    @Expose
+    public String productCode;
+    @SerializedName("country_id")
+    @Expose
+    public int countryId;
     @SerializedName("variants")
     @Expose
     public List<VariantsModel> variants;
@@ -186,5 +195,29 @@ public class ContentModel extends DMContent implements Serializable {
 
     public void setProductDetail(ProductDetail productDetail) {
         this.productDetail = productDetail;
+    }
+
+    public int getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(int discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
+    public String getProductCode() {
+        return productCode;
+    }
+
+    public void setProductCode(String productCode) {
+        this.productCode = productCode;
+    }
+
+    public int getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(int countryId) {
+        this.countryId = countryId;
     }
 }

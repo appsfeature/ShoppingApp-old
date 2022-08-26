@@ -17,6 +17,7 @@
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/bg_shape_size.xml" value="0.1595" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/bg_shape_size_selected.xml" value="0.1595" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/bg_shape_spinner.xml" value="0.1595" />
+        <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/bg_shape_squire.xml" value="0.1595" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/bg_splash.xml" value="0.1595" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/selector_tabs_background.xml" value="0.1595" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/drawable/selector_tabs_filter.xml" value="0.1595" />
@@ -28,10 +29,12 @@
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/content_home.xml" value="0.22573749465583584" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dialog_filter_home.xml" value="0.2228788518362178" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dialog_quantity.xml" value="0.22488242838820008" />
+        <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dialog_size_chart.xml" value="0.22573749465583584" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dm_parent_slot_list.xml" value="0.275" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dm_slot_scroll_view.xml" value="0.275" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dm_slot_slider.xml" value="0.275" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/dm_slot_sub_category.xml" value="0.275" />
+        <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/fragment_product_list.xml" value="0.22573749465583584" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/layout_extras.xml" value="0.2598958333333333" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/layout_menu_cart.xml" value="0.22573749465583584" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/layout_menu_notification.xml" value="0.275" />
@@ -50,6 +53,7 @@
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/layout/yt_action_bar.xml" value="0.2" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/menu/menu_cart.xml" value="0.2228788518362178" />
         <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/main/res/menu/menu_home.xml" value="0.275" />
+        <entry key="..\:/Developer/appsfeature/ShoppingApp/app/src/saintg/res/menu/menu_bottom_bar.xml" value="0.22573749465583584" />
       </map>
     </option>
   </component>

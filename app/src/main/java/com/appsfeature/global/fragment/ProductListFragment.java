@@ -10,13 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.appsfeature.global.R;
+import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ProductAdapter;
+import com.appsfeature.global.listeners.CategoryType;
+import com.appsfeature.global.model.AppBaseModel;
+import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.ClassUtil;
-import com.dynamic.R;
+import com.dynamic.adapter.holder.DMAutoSliderViewHolder;
 import com.dynamic.fragment.base.DMBaseGenericFragment;
 import com.dynamic.listeners.DynamicCallback;
 import com.helper.callback.Response;
@@ -34,11 +40,12 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
     private Activity activity;
     private RecyclerView rvList;
     private SwipeRefreshLayout swipeRefresh;
+    private ViewPager2 viewPager;
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dm_fragment_dynamic, container, false);
+        View view = inflater.inflate(R.layout.fragment_product_list, container, false);
         activity = getActivity();
         initView(view);
         loadData();
@@ -54,8 +61,10 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         layoutNoData = view.findViewById(R.id.ll_no_data);
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         rvList = view.findViewById(R.id.recycler_view);
+        viewPager = view.findViewById(R.id.view_pager);
         rvList.addItemDecoration(new RecyclerViewCardMarginGrid(2, 16, true));
         rvList.setLayoutManager(new GridLayoutManager(activity, 2));
+
         adapter = new ProductAdapter(activity, mList, new Response.OnClickListener<ContentModel>() {
             @Override
             public void onItemClicked(View view, ContentModel item) {
@@ -80,15 +89,15 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
     }
 
     private void getDataFromServer() {
-        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), new DynamicCallback.Listener<List<ContentModel>>() {
+        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), new DynamicCallback.Listener<AppBaseModel>() {
             @Override
-            public void onSuccess(List<ContentModel> response) {
+            public void onSuccess(AppBaseModel response) {
                 showProgress(false);
                 loadList(response);
             }
 
             @Override
-            public void onValidate(List<ContentModel> list, Response.Status<List<ContentModel>> callback) {
+            public void onValidate(AppBaseModel list, Response.Status<AppBaseModel> callback) {
                 DynamicCallback.Listener.super.onValidate(list, callback);
             }
 
@@ -107,17 +116,46 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         });
     }
 
-    private void loadList(List<ContentModel> list) {
+    private void loadList(AppBaseModel response) {
         rvList.setVisibility(View.VISIBLE);
         BaseUtil.showNoData(layoutNoData, View.GONE);
         mList.clear();
-        if (list != null && list.size() > 0) {
-            mList.addAll(list);
+        if (response.getProductList() != null && response.getProductList().size() > 0) {
+            mList.addAll(response.getProductList());
         }
-        if (list == null || list.size() <= 0) {
+        if (mList.size() <= 0) {
             BaseUtil.showNoData(layoutNoData, View.VISIBLE);
         }
         adapter.notifyDataSetChanged();
+        if(response.getSliderList() != null && response.getSliderList().size() > 0){
+            viewPager.setVisibility(View.VISIBLE);
+            AppDataManager.get(activity).processSliderList(response.getSliderList(), new Response.Status<List<ContentModel>>() {
+                @Override
+                public void onSuccess(List<ContentModel> response) {
+                    loadSliderList(response);
+                }
+            });
+        }else {
+            viewPager.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadSliderList(List<ContentModel> sliderList) {
+        DMAutoSliderViewHolder<CategoryModel, ContentModel> slider = new DMAutoSliderViewHolder((View) viewPager.getParent()) {
+            @Override
+            protected RecyclerView.Adapter<RecyclerView.ViewHolder> getChildAdapter(int itemType, Object category, List childList) {
+                return new HomeChildAdapter(activity, itemType, (CategoryModel) category, (List<ContentModel>) childList, new DynamicCallback.OnClickListener<CategoryModel, ContentModel>() {
+                    @Override
+                    public void onItemClicked(View v, CategoryModel category, ContentModel item) {
+
+                    }
+                });
+            }
+        };
+        CategoryModel mCategory = new CategoryModel();
+        mCategory.setItemType(CategoryType.TYPE_VIEWPAGER_AUTO_SLIDER_NO_TITLE);
+        mCategory.setChildList(sliderList);
+        slider.setData(mCategory, 0);
     }
 
     protected void showProgress(boolean isShow) {

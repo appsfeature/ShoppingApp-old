@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "884102848397",
+    "project_id": "saintgapp",
+    "storage_bucket": "saintgapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884102848397:android:e841a06038a1c7a6d1e7c4",
+        "android_client_info": {
+          "package_name": "com.saintg.androidapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "884102848397-s0gavp6nl5k1c3oasbvekoqlusaok3po.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtWwycBqMo9R8uP8H4UxUMC6_Q0MkHmN0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "884102848397-s0gavp6nl5k1c3oasbvekoqlusaok3po.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

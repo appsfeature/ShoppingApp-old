@@ -1,7 +1,9 @@
 package com.appsfeature.global.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,6 +16,7 @@ import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ColorAdapter;
 import com.appsfeature.global.adapter.app.SizeAdapter;
 import com.appsfeature.global.adapter.holder.ProductViewHolder;
+import com.appsfeature.global.dialog.AppDialog;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
@@ -44,6 +47,7 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
     private final ArrayList<SizeModel> sizesList = new ArrayList<>();
     private final ArrayList<ProductDetail> colorsList = new ArrayList<>();
     private ContentModel mContentDetail;
+    private TextView tvProductCode;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,8 +62,10 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
         viewMain = findViewById(R.id.view_main);
         rvSize = findViewById(R.id.rv_size);
         rvColor = findViewById(R.id.rv_color);
+        tvProductCode = findViewById(R.id.tv_product_code);
         (findViewById(R.id.btn_add_to_cart)).setOnClickListener(this);
         (findViewById(R.id.btn_buy_now)).setOnClickListener(this);
+        (findViewById(R.id.ll_size_chart)).setOnClickListener(this);
     }
 
     private void getDataFromServer(int productId) {
@@ -90,6 +96,12 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
 
     private void loadUi(ContentModel response) {
         this. mContentDetail = response;
+        if (!TextUtils.isEmpty(mContentDetail.getProductCode())) {
+            tvProductCode.setText("Product Code : " + mContentDetail.getProductCode());
+            tvProductCode.setVisibility(View.VISIBLE);
+        }else {
+            tvProductCode.setVisibility(View.GONE);
+        }
         ProductViewHolder viewHolder = new ProductViewHolder(getWindow().getDecorView());
         String imageUrl = DynamicModule.getInstance().getImageBaseUrl(this);
         viewHolder.setData(response, imageUrl);
@@ -208,6 +220,8 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
             addProductToCart(false);
         }else if(view.getId() == R.id.btn_buy_now){
             addProductToCart(true);
+        }else if(view.getId() == R.id.ll_size_chart){
+            AppDialog.openSizeChart(this, mContentDetail.categoryId);
         }
     }
 
@@ -225,13 +239,15 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
                 productDetail.setSize(selectedSize);
             }
         }
-        if(selectedSize <= 0){
-            BaseUtil.showToast(this, "Please Select Size.");
-            return;
-        }
-        if(productDetail == null){
-            BaseUtil.showToast(this, "Please Select Color.");
-            return;
+        if(sizesList.size() > 0) {
+            if (selectedSize <= 0) {
+                BaseUtil.showToast(this, "Please Select Size.");
+                return;
+            }
+            if (productDetail == null) {
+                BaseUtil.showToast(this, "Please Select Color.");
+                return;
+            }
         }
         mContentDetail.setProductDetail(productDetail);
         AppCartMaintainer.addOnCart(this, mContentDetail);

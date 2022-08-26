@@ -12,6 +12,9 @@ public class AttributeModel implements Serializable {
     @SerializedName("attributes_value")
     @Expose
     public String attributesValue;
+    @SerializedName("sku_code")
+    @Expose
+    public String skuCode;
 
     public String getAttributeName() {
         return attributeName;
@@ -27,5 +30,13 @@ public class AttributeModel implements Serializable {
 
     public void setAttributesValue(String attributesValue) {
         this.attributesValue = attributesValue;
+    }
+
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
     }
 }

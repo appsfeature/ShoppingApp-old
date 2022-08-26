@@ -26,6 +26,9 @@ public class ProductDetail implements Cloneable,  Serializable {
     @SerializedName("size")
     @Expose
     private int size;
+    @SerializedName("sku_code")
+    @Expose
+    private String skuCode;
 
     private boolean isChecked;
 
@@ -90,6 +93,13 @@ public class ProductDetail implements Cloneable,  Serializable {
         isChecked = checked;
     }
 
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
+    }
 
     @NonNull
     @Override
