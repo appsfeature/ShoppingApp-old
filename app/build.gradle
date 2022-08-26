@@ -26,8 +26,8 @@ android {
         }
         saintg {
             applicationId "com.saintg.androidapp"
-            versionCode 10
-            versionName "1.1"
+            versionCode 208
+            versionName "2.0"
             manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.saintg'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
         }
     }
