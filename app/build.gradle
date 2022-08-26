@@ -24,6 +24,12 @@ android {
             versionName "1.1"
             manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.dynamicapps'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
         }
+        saintg {
+            applicationId "com.saintg.androidapp"
+            versionCode 10
+            versionName "1.1"
+            manifestPlaceholders = [MAPS_API_KEY: project.properties['api.key.dynamicapps'], onesignal_app_id: "06e270e1-350b-437e-89b0-4e60da7b61f0", onesignal_google_project_number: "REMOTE"]
+        }
     }
     signingConfigs {
         dynamicapps {
@@ -32,6 +38,12 @@ android {
             keyAlias "dynamicapps"
             keyPassword "dynamicapps"
         }
+        saintg {
+            storeFile file("../keystore/SaintG.jks")
+            storePassword "8cbfb9af649e4702828115fa830367ac"
+            keyAlias "QGFkaXR5YWpvaGFyL1NhaW50Rw=="
+            keyPassword "63a9b6fdac25465a9a5a8f621c36535a"
+        }
     }
 
     buildTypes {
@@ -39,6 +51,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             productFlavors.dynamicapps.signingConfig signingConfigs.dynamicapps
+            productFlavors.saintg.signingConfig signingConfigs.saintg
         }
     }
 
@@ -80,7 +93,7 @@ dependencies {
 
     implementation "org.bitbucket.android-dennislabs:helper:$rootProject.ext.helper_version"
     implementation 'com.github.appsfeature:dynamic-module:1.2-alpha07'
-    implementation 'com.github.appsfeature:form-builder:2.5'
+    implementation 'com.github.appsfeature:form-builder:2.6'
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'com.tbuonomo:dotsindicator:4.2'
 

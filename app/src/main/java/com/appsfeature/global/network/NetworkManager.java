@@ -147,6 +147,9 @@ public class NetworkManager extends DMNetworkManager {
         Map<String, String> params = new HashMap<>();
         params.put("category_id", catId + "");
         params.put("subcategory_id", subCatId + "");
+        params.put("page_id", "");
+        params.put("size_id", "");
+        params.put("color_id", "");
         configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_PRODUCT_BY_SUBCATEGORY, params, new NetworkCallback.Response<NetworkModel>() {
             @Override
             public void onComplete(boolean status, NetworkModel data) {
