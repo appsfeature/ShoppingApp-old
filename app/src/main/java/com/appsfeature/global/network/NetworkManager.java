@@ -143,11 +143,11 @@ public class NetworkManager extends DMNetworkManager {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int subCatId, DynamicCallback.Listener<AppBaseModel> callback) {
+    public void getAppProductBySubCategory(int catId, int subCatId, int pageId, DynamicCallback.Listener<AppBaseModel> callback) {
         Map<String, String> params = new HashMap<>();
         params.put("category_id", catId + "");
         params.put("subcategory_id", subCatId + "");
-        params.put("page_id", "");
+        params.put("page_id", pageId + "");
         params.put("size_id", "");
         params.put("color_id", "");
         configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_PRODUCT_BY_SUBCATEGORY, params, new NetworkCallback.Response<NetworkModel>() {

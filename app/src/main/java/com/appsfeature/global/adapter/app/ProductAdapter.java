@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.holder.ProductViewHolder;
+import com.appsfeature.global.listeners.LoadMore;
 import com.appsfeature.global.model.ContentModel;
 import com.dynamic.DynamicModule;
 import com.helper.callback.Response;
@@ -30,10 +31,12 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final Response.OnClickListener<ContentModel> mCallback;
     public final ArrayList<ContentModel> tempList;
     private final String imageUrl;
+    private final LoadMore loadMore;
     private String searchText;
 
-    public ProductAdapter(Context context, List<ContentModel> mList, Response.OnClickListener<ContentModel> mCallback) {
+    public ProductAdapter(Context context, List<ContentModel> mList, LoadMore loadMore, Response.OnClickListener<ContentModel> mCallback) {
         this.mList = mList;
+        this.loadMore = loadMore;
         this.mCallback = mCallback;
         this.tempList = new ArrayList<>(mList);
         this.imageUrl = DynamicModule.getInstance().getImageBaseUrl(context);
@@ -64,6 +67,9 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ViewHolder holder = (ViewHolder) viewHolder;
             holder.setData(item, imageUrl);
             highlightText(holder, item.getTitle());
+        }
+        if (loadMore != null && position == mList.size() - 1) {
+            loadMore.onLoadMore();
         }
     }
 

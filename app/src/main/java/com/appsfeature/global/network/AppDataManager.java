@@ -66,8 +66,8 @@ public class AppDataManager extends DMBaseSorting {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int seasonId, DynamicCallback.Listener<AppBaseModel> callback) {
-        networkManager.getAppProductBySubCategory(catId, seasonId, new DynamicCallback.Listener<AppBaseModel>() {
+    public void getAppProductBySubCategory(int catId, int seasonId, int pageId, DynamicCallback.Listener<AppBaseModel> callback) {
+        networkManager.getAppProductBySubCategory(catId, seasonId, pageId, new DynamicCallback.Listener<AppBaseModel>() {
             @Override
             public void onSuccess(AppBaseModel response) {
                 arraySortAppContent(response.getProductList());

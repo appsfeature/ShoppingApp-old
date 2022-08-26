@@ -16,6 +16,7 @@ import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ProductAdapter;
 import com.appsfeature.global.listeners.CategoryType;
+import com.appsfeature.global.listeners.LoadMore;
 import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
@@ -33,14 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
-    private View layoutNoData;
+public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> implements LoadMore {
+    private View llNoData, llLoadMore;
     private ProductAdapter adapter;
     private final List<ContentModel> mList = new ArrayList<>();
     private Activity activity;
     private RecyclerView rvList;
     private SwipeRefreshLayout swipeRefresh;
     private ViewPager2 viewPager;
+    private int mTotalRows = 0, mTotalPages = 0, mCurrentPage = 1;
+    private boolean isLoadMore = true;
 
 
     @Override
@@ -53,19 +56,20 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
     }
 
     private void loadData() {
-        getDataFromServer();
+        getDataFromServer(mCurrentPage);
     }
 
 
     private void initView(View view) {
-        layoutNoData = view.findViewById(R.id.ll_no_data);
+        llNoData = view.findViewById(R.id.ll_no_data);
         swipeRefresh = view.findViewById(R.id.swipe_refresh);
         rvList = view.findViewById(R.id.recycler_view);
+        llLoadMore = view.findViewById(R.id.ll_load_more);
         viewPager = view.findViewById(R.id.view_pager);
         rvList.addItemDecoration(new RecyclerViewCardMarginGrid(2, 16, true));
         rvList.setLayoutManager(new GridLayoutManager(activity, 2));
 
-        adapter = new ProductAdapter(activity, mList, new Response.OnClickListener<ContentModel>() {
+        adapter = new ProductAdapter(activity, mList, this, new Response.OnClickListener<ContentModel>() {
             @Override
             public void onItemClicked(View view, ContentModel item) {
                 openItemOnClicked(view, item);
@@ -73,7 +77,7 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         });
         rvList.setAdapter(adapter);
 
-        if(swipeRefresh != null) {
+        if (swipeRefresh != null) {
             showProgress(false);
             swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
@@ -88,8 +92,9 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         ClassUtil.openActivityProductView(activity, property, item);
     }
 
-    private void getDataFromServer() {
-        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), new DynamicCallback.Listener<AppBaseModel>() {
+    private void getDataFromServer(int currentPage) {
+        this.mCurrentPage = currentPage;
+        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), currentPage, new DynamicCallback.Listener<AppBaseModel>() {
             @Override
             public void onSuccess(AppBaseModel response) {
                 showProgress(false);
@@ -104,30 +109,32 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
             @Override
             public void onFailure(Exception e) {
                 showProgress(false);
-                if(mList.size() == 0) {
-                    BaseUtil.showNoData(layoutNoData, View.VISIBLE);
+                if (mList.size() == 0) {
+                    BaseUtil.showNoData(llNoData, View.VISIBLE);
                 }
             }
 
             @Override
             public void onRequestCompleted() {
+                hideLoadMoreUi();
                 showProgress(false);
             }
         });
     }
 
     private void loadList(AppBaseModel response) {
+        updatePagination(response);
         rvList.setVisibility(View.VISIBLE);
-        BaseUtil.showNoData(layoutNoData, View.GONE);
-        mList.clear();
+        int initialSize = mList.size();
+        BaseUtil.showNoData(llNoData, View.GONE);
         if (response.getProductList() != null && response.getProductList().size() > 0) {
             mList.addAll(response.getProductList());
         }
         if (mList.size() <= 0) {
-            BaseUtil.showNoData(layoutNoData, View.VISIBLE);
+            BaseUtil.showNoData(llNoData, View.VISIBLE);
         }
-        adapter.notifyDataSetChanged();
-        if(response.getSliderList() != null && response.getSliderList().size() > 0){
+        adapter.notifyItemRangeChanged(initialSize, mList.size());
+        if (response.getSliderList() != null && response.getSliderList().size() > 0) {
             viewPager.setVisibility(View.VISIBLE);
             AppDataManager.get(activity).processSliderList(response.getSliderList(), new Response.Status<List<ContentModel>>() {
                 @Override
@@ -135,10 +142,11 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
                     loadSliderList(response);
                 }
             });
-        }else {
+        } else {
             viewPager.setVisibility(View.GONE);
         }
     }
+
 
     private void loadSliderList(List<ContentModel> sliderList) {
         DMAutoSliderViewHolder<CategoryModel, ContentModel> slider = new DMAutoSliderViewHolder((View) viewPager.getParent()) {
@@ -162,5 +170,49 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> {
         if (swipeRefresh != null) {
             swipeRefresh.setRefreshing(isShow);
         }
+    }
+
+    @Override
+    public void onLoadMore() {
+        if (isLoadMore)
+            handleLoadMore();
+    }
+
+    private void handleLoadMore(){
+        // check is load more in progress
+        // if not in progress call api for load more
+        if (!isLoadMoreUiVisible() && mList.size() >= 9){
+            mCurrentPage += 1;
+            if(mCurrentPage < mTotalPages) {
+                showLoadMoreUi();
+                getDataFromServer(mCurrentPage);
+            }else {
+                isLoadMore = false;
+            }
+        }
+    }
+
+    private void updatePagination(AppBaseModel response) {
+        this.mTotalRows = response.getTotalRows();
+        this.mTotalPages = response.getTotalPage();
+        if(mTotalRows < 10 || mTotalPages <= 0 || mList.size() == mTotalRows){
+            isLoadMore = false;
+        }
+    }
+
+    private void hideLoadMoreUi() {
+        if (llLoadMore != null) {
+            llLoadMore.setVisibility(View.GONE);
+        }
+    }
+
+    private void showLoadMoreUi() {
+        if (llLoadMore != null) {
+            llLoadMore.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean isLoadMoreUiVisible() {
+        return llLoadMore != null && llLoadMore.getVisibility() == View.VISIBLE;
     }
 }
