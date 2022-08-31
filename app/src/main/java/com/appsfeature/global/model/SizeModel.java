@@ -16,8 +16,9 @@ public class SizeModel implements Serializable {
     public SizeModel() {
     }
 
-    public SizeModel(int size, List<ProductDetail> list) {
+    public SizeModel(int size, boolean isChecked, List<ProductDetail> list) {
         this.size = size;
+        this.isChecked = isChecked;
         this.list = list;
     }
 

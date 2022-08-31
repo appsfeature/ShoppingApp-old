@@ -151,8 +151,10 @@ public class AppDataManager extends DMBaseSorting {
                 public Boolean call() throws Exception {
                     addingAttributesList();
                     mappingAttributesDetails();
+                    boolean isFirstSelected = true;
                     for (Map.Entry<Integer, List<ProductDetail>> entry : productDetailHashMap.entrySet()) {
-                      sizeList.add(new SizeModel(entry.getKey(), entry.getValue()));
+                        sizeList.add(new SizeModel(entry.getKey(), isFirstSelected, entry.getValue()));
+                        isFirstSelected = false;
                     }
                     return true;
                 }

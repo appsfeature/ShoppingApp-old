@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.reflect.TypeToken;
 import com.helper.util.BaseUtil;
 import com.helper.util.GsonParser;
+import com.squareup.picasso.Picasso;
 
 public class AppBaseViewHolder extends RecyclerView.ViewHolder {
 
@@ -35,4 +36,12 @@ public class AppBaseViewHolder extends RecyclerView.ViewHolder {
         }
         return appImage;
     }
+
+    private Picasso picasso;
+
+    public Picasso getPicasso() {
+        if (picasso == null) picasso = Picasso.get();
+        return picasso;
+    }
+
 }

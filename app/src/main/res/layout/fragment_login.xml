@@ -64,7 +64,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:background="@drawable/login_et_multi_row"
-                                    android:hint="Email"
+                                    android:hint="Mobile"
                                     android:layout_marginTop="@dimen/vertical_margin"
                                     android:inputType="textEmailAddress"
                                     android:padding="@dimen/vertical_margin" />
@@ -75,7 +75,8 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/vertical_margin"
                                     android:background="@drawable/login_et_multi_row"
-                                    android:hint="@string/login_password"
+                                    android:hint="OTP"
+                                    android:visibility="gone"
                                     android:inputType="textPassword"
                                     android:padding="@dimen/vertical_margin" />
 
@@ -84,6 +85,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/vertical_margin"
+                                    android:visibility="gone"
                                     android:paddingLeft="4dp"
                                     android:hint="Remember me"   />
 

@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 208,
-      "versionName": "2.0",
+      "versionCode": 209,
+      "versionName": "2.0.1",
       "outputFile": "app-saintg-release.apk"
     }
   ],

@@ -55,7 +55,8 @@ public class ProductViewHolder extends AppBaseViewHolder{
             String imagePath = getImageUrlFromJson(imageUrl, item.getImage());
             int placeHolder = R.drawable.ic_placeholder_icon;
             if (BaseUtil.isValidUrl(imagePath)) {
-                Picasso.get().load(imagePath)
+                getPicasso().load(imagePath)
+                        .resize(512,512)
                         .placeholder(placeHolder)
                         .into(ivIcon);
             } else {

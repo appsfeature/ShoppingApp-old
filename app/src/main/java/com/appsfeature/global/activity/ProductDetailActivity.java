@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,6 +44,7 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
     private View llNoData;
     private View viewMain;
     private RecyclerView rvSize, rvColor;
+    private View llColor;
 
     private final ArrayList<SizeModel> sizesList = new ArrayList<>();
     private final ArrayList<ProductDetail> colorsList = new ArrayList<>();
@@ -62,6 +64,7 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
         viewMain = findViewById(R.id.view_main);
         rvSize = findViewById(R.id.rv_size);
         rvColor = findViewById(R.id.rv_color);
+        llColor = findViewById(R.id.ll_color);
         tvProductCode = findViewById(R.id.tv_product_code);
         (findViewById(R.id.btn_add_to_cart)).setOnClickListener(this);
         (findViewById(R.id.btn_buy_now)).setOnClickListener(this);
@@ -149,7 +152,7 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
 
     private void updateSizeAdapter() {
         if(sizesList.size() > 0) {
-            rvSize.setLayoutManager(new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+            rvSize.setLayoutManager(new GridLayoutManager(this, 5));
             if(rvSize.getOnFlingListener() == null) {
                 SnapHelper snapHelper = new PagerSnapHelper();
                 snapHelper.attachToRecyclerView(rvSize);
@@ -162,6 +165,9 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
             });
             rvSize.setAdapter(adapter);
             rvSize.setVisibility(View.VISIBLE);
+            if(sizesList.get(0).isChecked()){
+                updateColorAdapter(sizesList.get(0).isChecked(), sizesList.get(0).getList());
+            }
         }else {
             rvSize.setVisibility(View.GONE);
         }
@@ -188,9 +194,9 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
                 }
             });
             rvColor.setAdapter(adapter);
-            rvColor.setVisibility(View.VISIBLE);
+            llColor.setVisibility(View.VISIBLE);
         }else {
-            rvColor.setVisibility(View.GONE);
+            llColor.setVisibility(View.GONE);
         }
     }
 
