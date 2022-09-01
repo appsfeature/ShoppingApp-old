@@ -1,7 +1,9 @@
 package com.appsfeature.global.model;
 
+import com.formbuilder.util.GsonParser;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,6 +37,14 @@ public class AppBaseModel implements Serializable {
     @SerializedName("total_page")
     @Expose
     private int totalPage;
+
+    @SerializedName("user_data")
+    @Expose
+    private List<UserModel> userData;
+
+    @SerializedName("country")
+    @Expose
+    private List<CommonModel> country;
 
     public List<CategoryModel> getList() {
         return list;
@@ -90,5 +100,21 @@ public class AppBaseModel implements Serializable {
 
     public void setTotalPage(int totalPage) {
         this.totalPage = totalPage;
+    }
+
+    public List<UserModel> getUserData() {
+        return userData;
+    }
+
+    public void setUserData(List<UserModel> userData) {
+        this.userData = userData;
+    }
+
+    public List<CommonModel> getCountry() {
+        return country;
+    }
+
+    public void setCountry(List<CommonModel> country) {
+        this.country = country;
     }
 }

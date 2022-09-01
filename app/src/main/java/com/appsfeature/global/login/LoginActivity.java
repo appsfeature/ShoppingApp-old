@@ -23,21 +23,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initFragment() {
-        final Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    Fragment fragment = LoginFragment.newInstance();
-                    fragment.setArguments(bundle);
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.add(R.id.content, fragment);
-                    transaction.commitAllowingStateLoss();
-                }
-            };
-            new Handler().post(runnable);
-        } else {
-            finish();
-        }
+        Runnable runnable = new Runnable() {
+            public void run() {
+                Fragment fragment = LoginFragment.newInstance();
+//                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.content, fragment);
+                transaction.commitAllowingStateLoss();
+            }
+        };
+        new Handler().post(runnable);
     }
 }

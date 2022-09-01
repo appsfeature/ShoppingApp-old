@@ -74,6 +74,9 @@
         <activity android:name=".activity.ProductDetailActivity"
             android:theme="@style/ActivityTheme.ActionBar"
             android:exported="false" />
+        <activity android:name=".activity.UserPreferenceActivity"
+            android:theme="@style/ActivityTheme.NoActionBar"
+            android:label="Preferences"/>
 
         <!--        <meta-data-->
 <!--            android:name="com.onesignal.NotificationOpened.DEFAULT"-->

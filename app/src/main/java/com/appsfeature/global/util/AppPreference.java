@@ -12,13 +12,11 @@ import com.helper.util.BasePrefUtil;
 public class AppPreference extends BasePrefUtil {
 
     private static final String TAG = "LoginPrefUtil";
-    private static final String SESSION_LOGIN_URL = "session_login_url";
-    private static final String IS_USER_LOGGED_IN_STATUS = "is_user_logged_in_status";
-    private static final String SESSION_LOGIN_USERNAME = "session_login_username";
-    private static final String SESSION_LOGIN_PASSWORD = "session_login_password";
     private static final String IMAGE_URL = "image_url";
     private static final String FILTER_GENDER = "filter_gender";
     private static final String FILTER_SEASON = "filter_season";
+    private static final String PROFILE = "profile";
+    private static final String COUNTRY = "country";
 
 
     @GenderType
@@ -39,40 +37,9 @@ public class AppPreference extends BasePrefUtil {
         setInt(AppApplication.getInstance(), FILTER_SEASON, value);
     }
 
-    public static String getSessionLoginUrl() {
-        return getString(AppApplication.getInstance(), SESSION_LOGIN_URL);
-    }
-
-    public static void setSessionLoginUrl(String sessionLoginUrl) {
-        setString(AppApplication.getInstance(), SESSION_LOGIN_URL, sessionLoginUrl);
-    }
-
-    public static String getUsername(int loginType) {
-        return getString(AppApplication.getInstance(), SESSION_LOGIN_USERNAME + loginType);
-    }
-
-    public static void setUsername(int loginType, String username) {
-        setString(AppApplication.getInstance(), SESSION_LOGIN_USERNAME + loginType, username);
-    }
-
-    public static String getPassword(int loginType) {
-        return getString(AppApplication.getInstance(), SESSION_LOGIN_PASSWORD + loginType);
-    }
-
-    public static void setPassword(int loginType, String password) {
-        setString(AppApplication.getInstance(), SESSION_LOGIN_PASSWORD + loginType, password);
-    }
 
     public static boolean isLoginCompleted() {
-        return !TextUtils.isEmpty(getSessionLoginUrl());
-    }
-
-    public static int isUserLoggedIn() {
-        return getInt(AppApplication.getInstance(), IS_USER_LOGGED_IN_STATUS, AppConstant.NOT_LOGIN);
-    }
-
-    public static void setUserLoggedIn(int isUserLoggedIn) {
-        setInt(AppApplication.getInstance(), IS_USER_LOGGED_IN_STATUS, isUserLoggedIn);
+        return !TextUtils.isEmpty(getProfile());
     }
 
     public static String getImageUrl() {
@@ -82,6 +49,26 @@ public class AppPreference extends BasePrefUtil {
     public static void setImageUrl(String value) {
         if(!TextUtils.isEmpty(value)) {
             setString(AppApplication.getInstance(), IMAGE_URL, value);
+        }
+    }
+
+    public static String getProfile() {
+        return getString(AppApplication.getInstance(), PROFILE);
+    }
+
+    public static void setProfile(String value) {
+        if(!TextUtils.isEmpty(value)) {
+            setString(AppApplication.getInstance(), PROFILE, value);
+        }
+    }
+
+    public static String getCountry() {
+        return getString(AppApplication.getInstance(), COUNTRY);
+    }
+
+    public static void setCountry(String value) {
+        if(!TextUtils.isEmpty(value)) {
+            setString(AppApplication.getInstance(), COUNTRY, value);
         }
     }
 }

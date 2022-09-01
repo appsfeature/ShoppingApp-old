@@ -5,16 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.appsfeature.global.AppApplication;
 import com.appsfeature.global.AppValues;
 import com.appsfeature.global.activity.CartActivity;
 import com.appsfeature.global.activity.HtmlViewerActivity;
 import com.appsfeature.global.activity.MainActivity;
 import com.appsfeature.global.activity.ProductDetailActivity;
 import com.appsfeature.global.activity.ProductListActivity;
+import com.appsfeature.global.activity.UserPreferenceActivity;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.listeners.ContentType;
 import com.appsfeature.global.listeners.LoginType;
 import com.appsfeature.global.login.LoginActivity;
+import com.appsfeature.global.login.LoginListener;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ExtraProperty;
@@ -51,7 +54,7 @@ public class ClassUtil {
                 case LoginType.TYPE_COURSE:
                 case LoginType.TYPE_TOOLS:
                 case LoginType.TYPE_ASSOCIATE:
-                    ClassUtil.openLoginActivity(activity, mItem.getItemType());
+                    ClassUtil.openLoginActivity(activity);
                     break;
                 case DMContentType.TYPE_LINK:
                     try {
@@ -185,20 +188,26 @@ public class ClassUtil {
         }
     }
 
-    public static void openLoginActivity(Activity activity, int loginType) {
+    public static void openLoginActivity(Activity activity) {
+        openLoginActivity(activity, null);
+    }
+
+    public static void openLoginActivity(Activity activity, LoginListener callback) {
         if(!AppPreference.isLoginCompleted()){
+            AppApplication.getInstance().setLoginListener(callback);
             try {
                 Intent intent = new Intent(activity, LoginActivity.class);
-                intent.putExtra(AppConstant.EXTRA_PROPERTY, loginType);
+//                intent.putExtra(AppConstant.EXTRA_PROPERTY, loginType);
                 activity.startActivity(intent);
             } catch (Exception e) {
                 e.printStackTrace();
                 BaseUtil.showToast(activity, "No option available for take action.");
             }
         }else {
-            ClassUtil.openLink(activity, "", AppPreference.getSessionLoginUrl(), false);
+            BaseUtil.showToast(activity, "User already logged in.");
         }
     }
+
     public static void openHomeActivity(Activity activity) {
         Intent intent = activity.getIntent();
         if(activity.getIntent() == null){
@@ -207,6 +216,11 @@ public class ClassUtil {
         intent.setClass(activity, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+    }
+
+    public static void openPreferenceActivity(Activity activity) {
+        Intent intent = new Intent(activity, UserPreferenceActivity.class);
         activity.startActivity(intent);
     }
 

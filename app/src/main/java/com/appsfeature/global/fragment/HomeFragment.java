@@ -11,16 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.HomeAdapter;
-import com.appsfeature.global.listeners.SeasonType;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
-import com.appsfeature.global.model.ExtraProperty;
 import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.AppPreference;
 import com.appsfeature.global.util.ClassUtil;
-import com.dynamic.R;
-import com.dynamic.fragment.base.DMBaseFragment;
 import com.dynamic.fragment.base.DMBaseGenericFragment;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.util.DMProperty;
@@ -49,7 +46,7 @@ public class HomeFragment extends DMBaseGenericFragment<DMProperty> {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dm_fragment_dynamic, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
         activity = getActivity();
         initView(view);
         loadData(property.getCatId(), AppPreference.getSeason());

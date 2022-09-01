@@ -29,6 +29,7 @@ public class AppDesign {
     public DrawerLayout drawerLayout;
     private MenuItem navLogout;
     private Toolbar toolbar;
+    private MenuItem menuProfile;
 
     public static AppDesign get(AppCompatActivity activity) {
         return AppDesign.get(activity, true);
@@ -54,6 +55,7 @@ public class AppDesign {
         NavigationView navigationView = rootView.findViewById(R.id.nav_view);
         drawerLayout = rootView.findViewById(R.id.drawer_layout);
 
+        menuProfile = navigationView.getMenu().findItem(R.id.nav_login);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -63,7 +65,9 @@ public class AppDesign {
                 }
 //              String s = SharedPrefUtil.getString(AppConstant.SharedPref.PLAYER_ID);
                 int itemId = item.getItemId();
-                if (itemId == R.id.nav_women) {
+                if (itemId == R.id.nav_login) {
+                    ClassUtil.openLoginActivity(activity);
+                } else if (itemId == R.id.nav_women) {
                     AppPreference.setGender(GenderType.TYPE_GIRL);
                     reloadHomeData();
                 } else if (itemId == R.id.nav_mens) {
@@ -77,8 +81,8 @@ public class AppDesign {
                     SocialUtil.moreApps(activity, AppConstant.DEVELOPER_NAME);
                 } else if (itemId == R.id.nav_logout) {
                     AppPreference.clearPreferences(activity);
-                    ClassUtil.openHomeActivity(activity);
                     activity.finish();
+                    ClassUtil.openHomeActivity(activity);
                 }
                 return true;
             }
@@ -168,8 +172,20 @@ public class AppDesign {
     }
 
     private void handleLoginData() {
-        if (navLogout != null) {
-            navLogout.setVisible(AppPreference.isLoginCompleted());
+        if(AppPreference.isLoginCompleted()){
+            if (navLogout != null) {
+                navLogout.setVisible(true);
+            }
+            if (menuProfile != null) {
+                menuProfile.setTitle("Profile");
+            }
+        }else {
+            if (navLogout != null) {
+                navLogout.setVisible(false);
+            }
+            if (menuProfile != null) {
+                menuProfile.setTitle("Login");
+            }
         }
     }
 

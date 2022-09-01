@@ -44,45 +44,6 @@ public class AppData {
             "Login for Associates"
     };
 
-
-    public static List<DMCategory> getStaticList() {
-        DMCategory item;
-        List<DMCategory> staticList = new ArrayList<>();
-
-        item = new DMCategory();
-        item.setRanking(1);
-        item.setCatId(1);
-        item.setItemType(CategoryType.TYPE_SUB_CATEGORY);
-        item.setSubCatId(AppValues.DASHBOARD_ID);
-        item.setTitle("Header");
-        item.setVisibility(R.drawable.ic_banner_image);
-        staticList.add(item);
-
-        item = new DMCategory();
-        item.setRanking(3);
-        item.setCatId(2);
-        item.setItemType(CategoryType.TYPE_VIDEO_PRODUCT);
-        item.setSubCatId(AppValues.DASHBOARD_ID);
-        item.setChildList(new ArrayList<>());
-
-        if(AppPreference.isLoginCompleted()){
-            if(AppPreference.isUserLoggedIn() == LoginType.TYPE_COURSE){
-                item.getChildList().add(getLoginList(0, true));
-            }else if(AppPreference.isUserLoggedIn() == LoginType.TYPE_TOOLS){
-                item.getChildList().add(getLoginList(1, true));
-            }else if(AppPreference.isUserLoggedIn() == LoginType.TYPE_ASSOCIATE){
-                item.getChildList().add(getLoginList(2, true));
-            }
-        }else {
-            item.getChildList().add(getLoginList(0, false));
-            item.getChildList().add(getLoginList(1, false));
-            item.getChildList().add(getLoginList(2, false));
-        }
-        staticList.add(item);
-
-        return staticList;
-    }
-
     private static DMContent getLoginList(int pos, boolean isLoginComplete) {
         DMContent item;
         item = new DMContent();

@@ -15,4 +15,7 @@ public interface ApiEndPoint {
     String GET_APP_DATA_USER = "getAppDataUser";
     String GET_APP_PRODUCT_BY_SUBCATEGORY = "getAppproduct_By_subcategory";
     String GET_APP_PRODUCT_DETAILS = "getAppproduct_details";
+    String GET_APP_USER_SIGNUP = "getAppUser_singup";
+    String USER_MATCH_OTP = "user_match_otp";
+    String GET_APP_COUNTRY_VIEW = "getAppcountry_view";
 }

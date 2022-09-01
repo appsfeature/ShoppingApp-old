@@ -2,12 +2,12 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/login_bg_main"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include layout="@layout/login_action_bar" />
@@ -15,18 +15,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/login_bg_main"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/action_bar_double_height"
-                    android:background="@color/colorPrimary" />
 
                 <LinearLayout
                     android:id="@+id/body"
@@ -40,8 +35,8 @@
                         android:layout_marginBottom="@dimen/vertical_margin"
                         android:layout_marginLeft="@dimen/vertical_margin"
                         android:layout_marginRight="@dimen/vertical_margin"
-                        card_view:cardCornerRadius="@dimen/dmCardCornerRadiusApp"
-                        card_view:cardElevation="@dimen/dmCardElevationApp"
+                        card_view:cardCornerRadius="8dp"
+                        card_view:cardElevation="8dp"
                         card_view:cardUseCompatPadding="true">
 
                         <LinearLayout
@@ -59,25 +54,43 @@
                                 android:orientation="vertical">
 
 
-                                <EditText
-                                    android:id="@+id/et_employee_username"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:background="@drawable/login_et_multi_row"
-                                    android:hint="Mobile"
+                                <RelativeLayout
                                     android:layout_marginTop="@dimen/vertical_margin"
-                                    android:inputType="textEmailAddress"
-                                    android:padding="@dimen/vertical_margin" />
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+
+                                    <EditText
+                                        android:id="@+id/et_mobile_no"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:background="@drawable/login_et_multi_row"
+                                        android:hint="Mobile"
+                                        android:inputType="numberSigned"
+                                        android:padding="@dimen/vertical_margin" />
+
+                                    <ImageView
+                                        android:id="@+id/iv_edit_number"
+                                        android:layout_width="45dp"
+                                        android:layout_height="45dp"
+                                        android:adjustViewBounds="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_alignParentRight="true"
+                                        android:visibility="gone"
+                                        android:alpha="0.5"
+                                        android:padding="8dp"
+                                        android:src="@drawable/ic_editorial_note"/>
+
+                                </RelativeLayout>
 
                                 <EditText
-                                    android:id="@+id/et_employee_password"
+                                    android:id="@+id/et_otp"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/vertical_margin"
                                     android:background="@drawable/login_et_multi_row"
                                     android:hint="OTP"
                                     android:visibility="gone"
-                                    android:inputType="textPassword"
+                                    android:inputType="numberSigned"
                                     android:padding="@dimen/vertical_margin" />
 
                                 <CheckBox
@@ -115,6 +128,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <LinearLayout

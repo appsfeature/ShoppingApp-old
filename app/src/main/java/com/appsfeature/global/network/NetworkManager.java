@@ -3,13 +3,11 @@ package com.appsfeature.global.network;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.appsfeature.global.login.LoginListener;
+import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.CommonModel;
-import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.ContentModel;
-import com.appsfeature.global.model.SessionModel;
-import com.appsfeature.global.util.AppData;
+import com.appsfeature.global.model.UserModel;
 import com.appsfeature.global.util.AppPreference;
 import com.dynamic.DynamicModule;
 import com.dynamic.listeners.ApiHost;
@@ -73,34 +71,60 @@ public class NetworkManager extends DMNetworkManager {
         });
     }
 
-    public void login(String email, String password, int loginType, final LoginListener<SessionModel> callback) {
-        callback.onPreExecute();
+    public void login(String phone, final Response.Callback<NetworkModel> callback) {
+        callback.onProgressUpdate(true);
         Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("password", password);
-
-        configManager.getData(ApiRequestType.GET, ApiHost.HOST_MAIN, AppData.loginHosts[loginType], params, new NetworkCallback.Response<NetworkModel>() {
+        params.put("phone", phone);
+        configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_USER_SIGNUP, params, new NetworkCallback.Response<NetworkModel>() {
             @Override
             public void onComplete(boolean status, NetworkModel data) {
                 try {
-                    if(status && !TextUtils.isEmpty(data.getData())) {
-                        SessionModel item = data.getData(SessionModel.class);
-                        if (item != null) {
-                            callback.onSuccess(item);
-                        } else {
-                            callback.onError(new Exception(BaseConstants.NO_DATA));
-                        }
+                    if(status) {
+                        callback.onSuccess(data);
                     }else {
-                        callback.onError(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
                     }
                 } catch (JsonSyntaxException e) {
-                    callback.onError(e);
+                    callback.onFailure(e);
                 }
             }
 
             @Override
             public void onFailure(Call<NetworkModel> call, Exception e) {
-                callback.onError(e);
+                callback.onFailure(e);
+            }
+        });
+    }
+
+    public void verifyOtp(String phone, String otp, final Response.Callback<UserModel> callback) {
+        callback.onProgressUpdate(true);
+        Map<String, String> params = new HashMap<>();
+        params.put("phone", phone);
+        params.put("otp", otp);
+        configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.USER_MATCH_OTP, params, new NetworkCallback.Response<NetworkModel>() {
+            @Override
+            public void onComplete(boolean status, NetworkModel data) {
+                try {
+                    if (status && !TextUtils.isEmpty(data.getData())) {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
+                        });
+                        if (entity != null && entity.getUserData() != null && entity.getUserData().size() > 0) {
+                            AppPreference.setProfile(entity.getUserData().get(0).toJson());
+                            callback.onSuccess(entity.getUserData().get(0));
+                        } else {
+                            callback.onFailure(new Exception(BaseConstants.NO_DATA));
+                        }
+                    } else {
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkModel> call, Exception e) {
+                callback.onFailure(e);
             }
         });
     }
@@ -198,6 +222,40 @@ public class NetworkManager extends DMNetworkManager {
                             AppPreference.setImageUrl(entity.getImageUrl());
                             DynamicModule.getInstance().setImageBaseUrl(context, ApiHost.HOST_DEFAULT, entity.getImageUrl());
                             callback.onSuccess(entity.getProductView());
+                        } else {
+                            callback.onFailure(new Exception(BaseConstants.NO_DATA));
+                        }
+                    } else {
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkModel> call, Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
+            }
+        });
+    }
+
+    public void getCountryCodes(DynamicCallback.Listener<List<CommonModel>> callback) {
+        Map<String, String> params = new HashMap<>();
+        configManager.getData(ApiRequestType.GET, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_COUNTRY_VIEW, params, new NetworkCallback.Response<NetworkModel>() {
+            @Override
+            public void onComplete(boolean status, NetworkModel data) {
+                try {
+                    if (status && !TextUtils.isEmpty(data.getData())) {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
+                        });
+                        if (entity != null && entity.getCountry() != null && entity.getCountry().size() > 0) {
+                            callback.onSuccess(entity.getCountry());
                         } else {
                             callback.onFailure(new Exception(BaseConstants.NO_DATA));
                         }

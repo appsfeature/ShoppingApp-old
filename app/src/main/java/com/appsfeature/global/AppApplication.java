@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.appsfeature.global.login.LoginListener;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.onesignal.NotificationWillShowInForegroundHandler;
 import com.appsfeature.global.onesignal.NotificationReceivedCallback;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 public class AppApplication extends BaseApplication {
 
     private static AppApplication instance;
+    private LoginListener mLoginListener;
 
     public static AppApplication getInstance() {
         return instance;
@@ -64,6 +66,7 @@ public class AppApplication extends BaseApplication {
 
         DynamicModule.getInstance()
                 .setDebugMode(isDebugMode())
+                .setImageResize(512, 512)
                 .addBaseUrlHost(getInstance(), ApiHost.HOST_MAIN, AppConstant.HOST_URL)
                 .addListClickListener(hashCode(), new DynamicCallback.OnDynamicListListener() {
                     @Override
@@ -150,5 +153,16 @@ public class AppApplication extends BaseApplication {
 
     public void clearNotificationCallBack(){
         onNotificationReceivedArrayList.clear();
+    }
+
+    public void updateLoginListener() {
+        if (mLoginListener != null) {
+            mLoginListener.onLoginComplete();
+            mLoginListener = null;
+        }
+    }
+
+    public void setLoginListener(LoginListener mLoginListener) {
+        this.mLoginListener = mLoginListener;
     }
 }
