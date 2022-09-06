@@ -62,6 +62,7 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
     private void initUi() {
         llNoData = findViewById(R.id.ll_no_data);
         viewMain = findViewById(R.id.view_main);
+        viewMain.setVisibility(View.GONE);
         rvSize = findViewById(R.id.rv_size);
         rvColor = findViewById(R.id.rv_color);
         llColor = findViewById(R.id.ll_color);
