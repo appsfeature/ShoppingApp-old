@@ -46,6 +46,10 @@ public class AppBaseModel implements Serializable {
     @Expose
     private List<CommonModel> country;
 
+    @SerializedName("attributes")
+    @Expose
+    private List<FilterModel> attributes;
+
     public List<CategoryModel> getList() {
         return list;
     }
@@ -116,5 +120,13 @@ public class AppBaseModel implements Serializable {
 
     public void setCountry(List<CommonModel> country) {
         this.country = country;
+    }
+
+    public List<FilterModel> getAttributes() {
+        return attributes;
+    }
+
+    public void setAttributes(List<FilterModel> attributes) {
+        this.attributes = attributes;
     }
 }

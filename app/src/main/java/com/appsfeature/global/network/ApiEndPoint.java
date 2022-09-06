@@ -18,4 +18,5 @@ public interface ApiEndPoint {
     String GET_APP_USER_SIGNUP = "getAppUser_singup";
     String USER_MATCH_OTP = "user_match_otp";
     String GET_APP_COUNTRY_VIEW = "getAppcountry_view";
+    String GET_APP_ATTRIBUTES = "getAppattributes";
 }

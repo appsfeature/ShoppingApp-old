@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -17,6 +18,7 @@ import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.NotificationAdapter;
 import com.appsfeature.global.adapter.holder.CartViewHolder;
 import com.appsfeature.global.listeners.CategoryType;
+import com.appsfeature.global.model.CartModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.NotificationItem;
@@ -42,6 +44,7 @@ public class CartActivity extends AppCompatActivity {
     private HomeChildAdapter adapter;
     private final List<ContentModel> mList = new ArrayList<>();
     private View llPriceDetail;
+    private TextView tvPrice, tvDiscount, tvDelivery, tvTotal;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,10 +62,15 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void loadData() {
-        AppCartMaintainer.getCartList(this, new Response.Status<List<ContentModel>>() {
+        AppCartMaintainer.getCartList(this, new Response.Status<CartModel>() {
             @Override
-            public void onSuccess(List<ContentModel> response) {
-                onUpdateUI(response);
+            public void onSuccess(CartModel response) {
+                if(response != null) {
+                    onUpdateUI(response.getProducts());
+                    updatePriceDetails(response);
+                }else {
+                    showNoDataView();
+                }
             }
         });
     }
@@ -70,6 +78,10 @@ public class CartActivity extends AppCompatActivity {
 
     public void onInitializeUI() {
         llNoData = findViewById(R.id.ll_no_data);
+        tvPrice = findViewById(R.id.tv_price);
+        tvDiscount = findViewById(R.id.tv_discount);
+        tvDelivery = findViewById(R.id.tv_delivery);
+        tvTotal = findViewById(R.id.tv_total);
         llPriceDetail = findViewById(R.id.ll_price_detail);
         RecyclerView rvList = findViewById(R.id.recycler_view);
         rvList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -112,6 +124,13 @@ public class CartActivity extends AppCompatActivity {
             showNoDataView();
         }
         adapter.notifyDataSetChanged();
+    }
+
+    private void updatePriceDetails(CartModel response) {
+        tvPrice.setText(getString(R.string.price_rs, response.getPrice()));
+        tvDiscount.setText(getString(R.string.price_rs, response.getDiscount()));
+        tvDelivery.setText(getString(R.string.price_rs, response.getDelivery()));
+        tvTotal.setText(getString(R.string.price_rs, response.getTotal()));
     }
 
 

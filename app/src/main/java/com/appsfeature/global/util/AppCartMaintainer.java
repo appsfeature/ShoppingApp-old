@@ -3,6 +3,7 @@ package com.appsfeature.global.util;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsfeature.global.model.CartModel;
 import com.appsfeature.global.model.ContentModel;
 import com.google.gson.reflect.TypeToken;
 import com.helper.callback.Response;
@@ -22,16 +23,31 @@ public class AppCartMaintainer extends ListMaintainer {
         saveData(context, CART_DATA, mProduct, mProduct.getTitle());
     }
 
-    public static void getCartList(Context context, Response.Status<List<ContentModel>> callback) {
-        TaskRunner.getInstance().executeAsync(new Callable<List<ContentModel>>() {
+    public static void getCartList(Context context, Response.Status<CartModel> callback) {
+        TaskRunner.getInstance().executeAsync(new Callable<CartModel>() {
             @Override
-            public List<ContentModel> call() throws Exception {
-                return getData(context, CART_DATA, new TypeToken<List<ContentModel>>() {
+            public CartModel call() throws Exception {
+                CartModel cartModel = null;
+                float price = 0, discount = 0, delivery = 0, total = 0;
+                List<ContentModel> mProducts = getData(context, CART_DATA, new TypeToken<List<ContentModel>>() {
                 });
+                if(mProducts != null && mProducts.size() > 0) {
+                    cartModel = new CartModel();
+                    cartModel.setProducts(mProducts);
+                    for (ContentModel item : mProducts){
+                        price += item.getPrice();
+                    }
+                    total = (price + delivery) - discount;
+                    cartModel.setPrice(price);
+                    cartModel.setDiscount(discount);
+                    cartModel.setDelivery(delivery);
+                    cartModel.setTotal(total);
+                }
+                return cartModel;
             }
-        }, new TaskRunner.Callback<List<ContentModel>>() {
+        }, new TaskRunner.Callback<CartModel>() {
             @Override
-            public void onComplete(List<ContentModel> result) {
+            public void onComplete(CartModel result) {
                 callback.onSuccess(result);
             }
         });

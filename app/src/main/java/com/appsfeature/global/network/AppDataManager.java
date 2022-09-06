@@ -1,20 +1,26 @@
 package com.appsfeature.global.network;
 
 import android.content.Context;
+import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.listeners.AttributeType;
 import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.AttributeModel;
 import com.appsfeature.global.model.CategoryModel;
+import com.appsfeature.global.model.FilterModel;
 import com.appsfeature.global.model.SizeModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ProductDetail;
 import com.appsfeature.global.model.VariantsModel;
 import com.appsfeature.global.util.AppPreference;
+import com.appsfeature.global.util.ListMaintainer;
 import com.appsfeature.global.util.SupportUtil;
 import com.dynamic.listeners.DynamicCallback;
 import com.dynamic.model.DMCategory;
 import com.dynamic.util.DMBaseSorting;
+import com.google.gson.reflect.TypeToken;
 import com.helper.callback.Response;
 import com.helper.task.TaskRunner;
 import com.helper.util.BaseUtil;
@@ -32,8 +38,10 @@ public class AppDataManager extends DMBaseSorting {
     private static AppDataManager instance;
 
     private final NetworkManager networkManager;
+    private final Context context;
 
     private AppDataManager(Context context) {
+        this.context = context;
         networkManager = NetworkManager.getInstance(context);
     }
 
@@ -212,6 +220,30 @@ public class AppDataManager extends DMBaseSorting {
             @Override
             public void onComplete(List<ContentModel> result) {
                 callback.onSuccess(result);
+            }
+        });
+    }
+
+    public void getAttributeData(DynamicCallback.Listener<List<FilterModel>> callback) {
+        List<FilterModel> savedList = ListMaintainer.getList(context, AppPreference.ATTRIBUTES, new TypeToken<List<FilterModel>>() {
+        });
+        if(savedList != null && savedList.size() > 0){
+            callback.onSuccess(savedList);
+        }
+        networkManager.getAttributeData(new DynamicCallback.Listener<List<FilterModel>>() {
+            @Override
+            public void onSuccess(List<FilterModel> response) {
+                callback.onSuccess(response);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
             }
         });
     }

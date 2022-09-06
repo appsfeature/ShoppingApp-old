@@ -7,8 +7,10 @@ import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.CommonModel;
 import com.appsfeature.global.model.ContentModel;
+import com.appsfeature.global.model.FilterModel;
 import com.appsfeature.global.model.UserModel;
 import com.appsfeature.global.util.AppPreference;
+import com.appsfeature.global.util.ListMaintainer;
 import com.dynamic.DynamicModule;
 import com.dynamic.listeners.ApiHost;
 import com.dynamic.listeners.ApiRequestType;
@@ -256,6 +258,41 @@ public class NetworkManager extends DMNetworkManager {
                         });
                         if (entity != null && entity.getCountry() != null && entity.getCountry().size() > 0) {
                             callback.onSuccess(entity.getCountry());
+                        } else {
+                            callback.onFailure(new Exception(BaseConstants.NO_DATA));
+                        }
+                    } else {
+                        callback.onFailure(new Exception(data != null ? data.getMessage() : BaseConstants.NO_DATA));
+                    }
+                } catch (JsonSyntaxException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NetworkModel> call, Exception e) {
+                callback.onFailure(e);
+            }
+
+            @Override
+            public void onRequestCompleted() {
+                callback.onRequestCompleted();
+            }
+        });
+    }
+
+    public void getAttributeData(DynamicCallback.Listener<List<FilterModel>> callback) {
+        Map<String, String> params = new HashMap<>();
+        configManager.getData(ApiRequestType.GET, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_ATTRIBUTES, params, new NetworkCallback.Response<NetworkModel>() {
+            @Override
+            public void onComplete(boolean status, NetworkModel data) {
+                try {
+                    if (status && !TextUtils.isEmpty(data.getData())) {
+                        AppBaseModel entity = data.getData(new TypeToken<AppBaseModel>() {
+                        });
+                        if (entity != null && entity.getAttributes() != null && entity.getAttributes().size() > 0) {
+                            ListMaintainer.saveList(context, AppPreference.ATTRIBUTES, entity.getAttributes());
+                            callback.onSuccess(entity.getAttributes());
                         } else {
                             callback.onFailure(new Exception(BaseConstants.NO_DATA));
                         }

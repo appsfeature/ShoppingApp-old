@@ -11,14 +11,23 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.appsfeature.global.R;
+import com.appsfeature.global.adapter.FilterAdapter;
 import com.appsfeature.global.listeners.GenderType;
 import com.appsfeature.global.listeners.SeasonType;
+import com.appsfeature.global.model.FilterModel;
+import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.AppPreference;
+import com.dynamic.listeners.DynamicCallback;
 import com.helper.callback.Response;
-import com.helper.model.BaseModel;
 import com.helper.util.BaseUtil;
 import com.helper.widget.SelectionSwitch;
+
+import java.util.List;
 
 public class AppDialog {
 
@@ -148,5 +157,69 @@ public class AppDialog {
         } catch (final Exception e) {
         }
     }
+
+    public static void openFilterProduct(Activity activity, Response.Status<Boolean> callback) {
+        try {
+            Dialog dialog = new Dialog(activity, R.style.DialogThemeFullScreen);
+            dialog.setCancelable(false);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
+            dialog.setContentView(R.layout.dialog_filter_list);
+
+            View llNoData = dialog.findViewById(R.id.ll_no_data);
+            RecyclerView recyclerView = dialog.findViewById(R.id.recycler_view);
+            AppDataManager.get(activity).getAttributeData(new DynamicCallback.Listener<List<FilterModel>>() {
+                @Override
+                public void onSuccess(List<FilterModel> response) {
+                    if (response != null && response.size() > 0) {
+                        BaseUtil.showNoData(llNoData, View.GONE);
+                        FilterAdapter adapter = new FilterAdapter(response);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
+                        recyclerView.setItemAnimator(new DefaultItemAnimator());
+                        recyclerView.setAdapter(adapter);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    } else {
+                        recyclerView.setVisibility(View.GONE);
+                        BaseUtil.showNoData(llNoData, View.VISIBLE);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    if(recyclerView.getAdapter() == null) {
+                        BaseUtil.showNoData(llNoData, View.VISIBLE);
+                    }
+                }
+            });
+
+            dialog.findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    dismissDialog(dialog);
+                    callback.onSuccess(true);
+                }
+            });
+
+            dialog.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismissDialog(dialog);
+                }
+            });
+            dialog.findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dismissDialog(dialog);
+                }
+            });
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

@@ -3,10 +3,16 @@ package com.appsfeature.global.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -15,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.appsfeature.global.R;
 import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ProductAdapter;
+import com.appsfeature.global.dialog.AppDialog;
 import com.appsfeature.global.listeners.CategoryType;
 import com.appsfeature.global.listeners.LoadMore;
 import com.appsfeature.global.model.AppBaseModel;
@@ -45,6 +52,11 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
     private int mTotalRows = 0, mTotalPages = 0, mCurrentPage = 1;
     private boolean isLoadMore = true;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -214,5 +226,59 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
 
     private boolean isLoadMoreUiVisible() {
         return llLoadMore != null && llLoadMore.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_product, menu);
+//        MenuItem testingMenu = menu.findItem(R.id.action_testing);
+//        if (testingMenu != null) {
+//            testingMenu.setVisible(AppConstant.IS_TESTING);
+//        }
+//
+//        MenuItem searchViewItem = menu.findItem(R.id.app_bar_search);
+//        searchView = (SearchView) searchViewItem.getActionView();
+//        searchView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                getAppAnalytics().onSubjectSearchClicked(AnalyticsKeys.ParamValue.SEARCH);
+//                return false;
+//            }
+//        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                searchView.clearFocus();
+//                /*   if(list.contains(query)){
+//                    adapter.getFilter().filter(query);
+//                }else{
+//                    Toast.makeText(MainActivity.this, "No Match found",Toast.LENGTH_LONG).show();
+//                }*/
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                adapter.setSearchQuery(newText);
+//                adapter.getFilter().filter(newText);
+//                return false;
+//            }
+//        });
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_filter) {
+            AppDialog.openFilterProduct(activity, new Response.Status<Boolean>() {
+                @Override
+                public void onSuccess(Boolean response) {
+
+                }
+            });
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

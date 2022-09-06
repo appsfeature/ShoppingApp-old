@@ -19,4 +19,5 @@
     <string name="count_down_format_hour">%d hr %d min %d sec</string>
     <string name="count_down_format_min">%d min %d sec</string>
     <string name="loading">loading…</string>
+    <string name="price_rs">Rs.%.02f</string>
 </resources>

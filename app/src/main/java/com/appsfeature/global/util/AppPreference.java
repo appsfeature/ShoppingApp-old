@@ -17,6 +17,7 @@ public class AppPreference extends BasePrefUtil {
     private static final String FILTER_SEASON = "filter_season";
     private static final String PROFILE = "profile";
     private static final String COUNTRY = "country";
+    public static final String ATTRIBUTES = "Attributes";
 
 
     @GenderType
