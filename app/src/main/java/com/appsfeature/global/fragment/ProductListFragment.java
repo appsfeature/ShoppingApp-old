@@ -23,11 +23,13 @@ import com.appsfeature.global.adapter.HomeChildAdapter;
 import com.appsfeature.global.adapter.app.ProductAdapter;
 import com.appsfeature.global.dialog.AppDialog;
 import com.appsfeature.global.listeners.CategoryType;
+import com.appsfeature.global.listeners.FilterType;
 import com.appsfeature.global.listeners.LoadMore;
 import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.ContentModel;
 import com.appsfeature.global.model.ExtraProperty;
+import com.appsfeature.global.model.FilterModel;
 import com.appsfeature.global.network.AppDataManager;
 import com.appsfeature.global.util.ClassUtil;
 import com.dynamic.adapter.holder.DMAutoSliderViewHolder;
@@ -39,6 +41,8 @@ import com.helper.widget.RecyclerViewCardMarginGrid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> implements LoadMore {
@@ -51,6 +55,8 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
     private ViewPager2 viewPager;
     private int mTotalRows = 0, mTotalPages = 0, mCurrentPage = 1;
     private boolean isLoadMore = true;
+    private final Map<Integer, String> filterMap = new TreeMap<>();
+    private final List<FilterModel> mFilterList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,7 +112,7 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
 
     private void getDataFromServer(int currentPage) {
         this.mCurrentPage = currentPage;
-        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), currentPage, new DynamicCallback.Listener<AppBaseModel>() {
+        AppDataManager.get(activity).getAppProductBySubCategory(property.getParentId(), property.getCatId(), currentPage, filterMap, new DynamicCallback.Listener<AppBaseModel>() {
             @Override
             public void onSuccess(AppBaseModel response) {
                 showProgress(false);
@@ -123,6 +129,8 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
                 showProgress(false);
                 if (mList.size() == 0) {
                     BaseUtil.showNoData(llNoData, View.VISIBLE);
+                }else {
+                    BaseUtil.showNoData(llNoData, View.GONE);
                 }
             }
 
@@ -271,14 +279,30 @@ public class ProductListFragment extends DMBaseGenericFragment<ExtraProperty> im
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_filter) {
-            AppDialog.openFilterProduct(activity, new Response.Status<Boolean>() {
+            AppDialog.openFilterProduct(activity, mFilterList, new Response.Status<List<FilterModel>>() {
                 @Override
-                public void onSuccess(Boolean response) {
-
+                public void onSuccess(List<FilterModel> response) {
+                    AppDataManager.getFilterData(response, new Response.Status<Map<Integer, String>>() {
+                        @Override
+                        public void onSuccess(Map<Integer, String> result) {
+                            if(result != null && result.size() > 0){
+                                applyFilter(result);
+                            }
+                        }
+                    });
                 }
             });
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void applyFilter(Map<Integer, String> response) {
+        this.mList.clear();
+        this.adapter.notifyDataSetChanged();
+        this.filterMap.clear();
+        this.filterMap.putAll(response);
+        BaseUtil.showNoDataProgress(llNoData);
+        getDataFromServer(1);
     }
 }

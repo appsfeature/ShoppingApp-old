@@ -27,6 +27,7 @@ import com.helper.callback.Response;
 import com.helper.util.BaseUtil;
 import com.helper.widget.SelectionSwitch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AppDialog {
@@ -158,7 +159,7 @@ public class AppDialog {
         }
     }
 
-    public static void openFilterProduct(Activity activity, Response.Status<Boolean> callback) {
+    public static void openFilterProduct(Activity activity, List<FilterModel> mList, Response.Status<List<FilterModel>> callback) {
         try {
             Dialog dialog = new Dialog(activity, R.style.DialogThemeFullScreen);
             dialog.setCancelable(false);
@@ -170,36 +171,42 @@ public class AppDialog {
 
             View llNoData = dialog.findViewById(R.id.ll_no_data);
             RecyclerView recyclerView = dialog.findViewById(R.id.recycler_view);
-            AppDataManager.get(activity).getAttributeData(new DynamicCallback.Listener<List<FilterModel>>() {
-                @Override
-                public void onSuccess(List<FilterModel> response) {
-                    if (response != null && response.size() > 0) {
-                        BaseUtil.showNoData(llNoData, View.GONE);
-                        FilterAdapter adapter = new FilterAdapter(response);
-                        recyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
-                        recyclerView.setItemAnimator(new DefaultItemAnimator());
-                        recyclerView.setAdapter(adapter);
-                        recyclerView.setVisibility(View.VISIBLE);
-                    } else {
-                        recyclerView.setVisibility(View.GONE);
-                        BaseUtil.showNoData(llNoData, View.VISIBLE);
+            FilterAdapter adapter = new FilterAdapter(mList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+            recyclerView.setVisibility(View.VISIBLE);
+            if(mList.size() <= 0) {
+                AppDataManager.get(activity).getAttributeData(new DynamicCallback.Listener<List<FilterModel>>() {
+                    @Override
+                    public void onSuccess(List<FilterModel> response) {
+                        if (response != null && response.size() > 0) {
+                            mList.clear();
+                            mList.addAll(response);
+                            adapter.notifyDataSetChanged();
+                            BaseUtil.showNoData(llNoData, View.GONE);
+                        } else {
+                            recyclerView.setVisibility(View.GONE);
+                            BaseUtil.showNoData(llNoData, View.VISIBLE);
+                        }
                     }
-                }
 
-                @Override
-                public void onFailure(Exception e) {
-                    if(recyclerView.getAdapter() == null) {
-                        BaseUtil.showNoData(llNoData, View.VISIBLE);
+                    @Override
+                    public void onFailure(Exception e) {
+                        if (recyclerView.getAdapter() == null) {
+                            BaseUtil.showNoData(llNoData, View.VISIBLE);
+                        }
                     }
-                }
-            });
+                });
+            }else {
+                BaseUtil.showNoData(llNoData, View.GONE);
+            }
 
             dialog.findViewById(R.id.btn_submit).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     dismissDialog(dialog);
-                    callback.onSuccess(true);
+                    callback.onSuccess(mList);
                 }
             });
 

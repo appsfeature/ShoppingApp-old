@@ -1,11 +1,13 @@
 package com.appsfeature.global.network;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.appsfeature.global.listeners.AttributeType;
+import com.appsfeature.global.listeners.FilterType;
 import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.AttributeModel;
 import com.appsfeature.global.model.CategoryModel;
@@ -24,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import com.helper.callback.Response;
 import com.helper.task.TaskRunner;
 import com.helper.util.BaseUtil;
+import com.helper.util.GsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 public class AppDataManager extends DMBaseSorting {
@@ -74,8 +78,8 @@ public class AppDataManager extends DMBaseSorting {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int seasonId, int pageId, DynamicCallback.Listener<AppBaseModel> callback) {
-        networkManager.getAppProductBySubCategory(catId, seasonId, pageId, new DynamicCallback.Listener<AppBaseModel>() {
+    public void getAppProductBySubCategory(int catId, int seasonId, int pageId, Map<Integer, String> filterMap, DynamicCallback.Listener<AppBaseModel> callback) {
+        networkManager.getAppProductBySubCategory(catId, seasonId, pageId, filterMap, new DynamicCallback.Listener<AppBaseModel>() {
             @Override
             public void onSuccess(AppBaseModel response) {
                 arraySortAppContent(response.getProductList());
@@ -247,4 +251,50 @@ public class AppDataManager extends DMBaseSorting {
             }
         });
     }
+
+
+    public static void getFilterData(List<FilterModel> response, Response.Status<Map<Integer, String>> callback) {
+        TaskRunner.getInstance().executeAsync(new Callable<Map<Integer, String>>() {
+            @Override
+            public Map<Integer, String> call() throws Exception {
+                Map<Integer, String> filterMap = new TreeMap<>();
+                if (response != null && response.size() > 0) {
+                    List<Integer> colors = new ArrayList<>();
+                    List<Integer> sizes = new ArrayList<>();
+                    for (FilterModel item : response) {
+                        if (item.getId() == 1) {
+                            for (FilterModel child : item.getAttributesIds()) {
+                                if (child.isChecked()) {
+                                    colors.add(child.getId());
+                                }
+                            }
+                        } else if (item.getId() == 2) {
+                            for (FilterModel child : item.getAttributesIds()) {
+                                if (child.isChecked()) {
+                                    sizes.add(child.getId());
+                                }
+                            }
+                        }
+                    }
+                    if (colors.size() > 0 || sizes.size() > 0) {
+                        if (colors.size() > 0) {
+                            filterMap.put(FilterType.TYPE_COLOR, GsonParser.toJson(colors, new TypeToken<List<Integer>>() {
+                            }));
+                        }
+                        if (sizes.size() > 0) {
+                            filterMap.put(FilterType.TYPE_SIZE, GsonParser.toJson(sizes, new TypeToken<List<Integer>>() {
+                            }));
+                        }
+                    }
+                }
+                return filterMap;
+            }
+        }, new TaskRunner.Callback<Map<Integer, String>>() {
+            @Override
+            public void onComplete(Map<Integer, String> result) {
+                callback.onSuccess(result);
+            }
+        });
+    }
+
 }

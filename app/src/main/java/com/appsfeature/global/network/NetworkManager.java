@@ -3,6 +3,7 @@ package com.appsfeature.global.network;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.appsfeature.global.listeners.FilterType;
 import com.appsfeature.global.model.AppBaseModel;
 import com.appsfeature.global.model.CategoryModel;
 import com.appsfeature.global.model.CommonModel;
@@ -169,13 +170,17 @@ public class NetworkManager extends DMNetworkManager {
         });
     }
 
-    public void getAppProductBySubCategory(int catId, int subCatId, int pageId, DynamicCallback.Listener<AppBaseModel> callback) {
+    public void getAppProductBySubCategory(int catId, int subCatId, int pageId, Map<Integer, String> filterMap, DynamicCallback.Listener<AppBaseModel> callback) {
         Map<String, String> params = new HashMap<>();
         params.put("category_id", catId + "");
         params.put("subcategory_id", subCatId + "");
         params.put("page_id", pageId + "");
-        params.put("size_id", "");
-        params.put("color_id", "");
+        String colors = filterMap.get(FilterType.TYPE_COLOR);
+        params.put("color_id", colors != null ? colors : "");
+
+        String sizes = filterMap.get(FilterType.TYPE_SIZE);
+        params.put("size_id", sizes != null ? sizes : "");
+
         configManager.getData(ApiRequestType.POST_FORM, ApiHost.HOST_MAIN, ApiEndPoint.GET_APP_PRODUCT_BY_SUBCATEGORY, params, new NetworkCallback.Response<NetworkModel>() {
             @Override
             public void onComplete(boolean status, NetworkModel data) {
