@@ -33,6 +33,7 @@ import com.dynamic.adapter.holder.DMAutoSliderViewHolder;
 import com.dynamic.listeners.DynamicCallback;
 import com.helper.callback.Response;
 import com.helper.util.BaseAnimationUtil;
+import com.helper.util.BaseConstants;
 import com.helper.util.BaseUtil;
 
 import java.util.ArrayList;
@@ -100,28 +101,30 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
 
     private void loadUi(ContentModel response) {
         this. mContentDetail = response;
-        if (!TextUtils.isEmpty(mContentDetail.getProductCode())) {
-            tvProductCode.setText("Product Code : " + mContentDetail.getProductCode());
-            tvProductCode.setVisibility(View.VISIBLE);
-        }else {
-            tvProductCode.setVisibility(View.GONE);
+        if(mContentDetail != null) {
+            if (!TextUtils.isEmpty(mContentDetail.getProductCode())) {
+                tvProductCode.setText("Product Code : " + mContentDetail.getProductCode());
+                tvProductCode.setVisibility(View.VISIBLE);
+            } else {
+                tvProductCode.setVisibility(View.GONE);
+            }
+            ProductViewHolder viewHolder = new ProductViewHolder(getWindow().getDecorView());
+            String imageUrl = DynamicModule.getInstance().getImageBaseUrl(this);
+            viewHolder.setData(response, imageUrl);
+            updateSliderImages(response);
+            BaseAnimationUtil.alphaAnimation(viewMain, View.VISIBLE);
+            AppDataManager.get(this).processAdditionalAttributes(sizesList, response.getVariants(), new Response.Status<HashMap<Integer, List<ProductDetail>>>() {
+                @Override
+                public void onSuccess(HashMap<Integer, List<ProductDetail>> response) {
+                    updateSizeAdapter();
+                }
+
+                @Override
+                public void onProgressUpdate(Boolean isShow) {
+
+                }
+            });
         }
-        ProductViewHolder viewHolder = new ProductViewHolder(getWindow().getDecorView());
-        String imageUrl = DynamicModule.getInstance().getImageBaseUrl(this);
-        viewHolder.setData(response, imageUrl);
-        updateSliderImages(response);
-        BaseAnimationUtil.alphaAnimation(viewMain, View.VISIBLE);
-        AppDataManager.get(this).processAdditionalAttributes(sizesList, response.getVariants(), new Response.Status<HashMap<Integer, List<ProductDetail>>>() {
-            @Override
-            public void onSuccess(HashMap<Integer, List<ProductDetail>> response) {
-                updateSizeAdapter();
-            }
-
-            @Override
-            public void onProgressUpdate(Boolean isShow) {
-
-            }
-        });
     }
 
     private void updateSliderImages(ContentModel response) {
@@ -228,39 +231,45 @@ public class ProductDetailActivity extends BaseActivity implements View.OnClickL
         }else if(view.getId() == R.id.btn_buy_now){
             addProductToCart(true);
         }else if(view.getId() == R.id.ll_size_chart){
-            AppDialog.openSizeChart(this, mContentDetail.categoryId);
+            if (mContentDetail != null) {
+                AppDialog.openSizeChart(this, mContentDetail.categoryId);
+            }
         }
     }
 
     private void addProductToCart(boolean isOpenCart) {
-        int selectedSize = 0;
-        ProductDetail productDetail = null;
-        for (SizeModel item : sizesList){
-            if(item.isChecked()){
-                selectedSize = item.getSize();
+        if(mContentDetail != null) {
+            int selectedSize = 0;
+            ProductDetail productDetail = null;
+            for (SizeModel item : sizesList) {
+                if (item.isChecked()) {
+                    selectedSize = item.getSize();
+                }
             }
-        }
-        for (ProductDetail item : colorsList){
-            if(item.isChecked()){
-                productDetail = item.getClone();
-                productDetail.setSize(selectedSize);
+            for (ProductDetail item : colorsList) {
+                if (item.isChecked()) {
+                    productDetail = item.getClone();
+                    productDetail.setSize(selectedSize);
+                }
             }
-        }
-        if(sizesList.size() > 0) {
-            if (selectedSize <= 0) {
-                BaseUtil.showToast(this, "Please Select Size.");
-                return;
+            if (sizesList.size() > 0) {
+                if (selectedSize <= 0) {
+                    BaseUtil.showToast(this, "Please Select Size.");
+                    return;
+                }
+                if (productDetail == null) {
+                    BaseUtil.showToast(this, "Please Select Color.");
+                    return;
+                }
             }
-            if (productDetail == null) {
-                BaseUtil.showToast(this, "Please Select Color.");
-                return;
+            mContentDetail.setProductDetail(productDetail);
+            AppCartMaintainer.addOnCart(this, mContentDetail);
+            BaseUtil.showToast(this, "Product added on Cart.");
+            if (isOpenCart) {
+                ClassUtil.openActivityCart(this);
             }
-        }
-        mContentDetail.setProductDetail(productDetail);
-        AppCartMaintainer.addOnCart(this, mContentDetail);
-        BaseUtil.showToast(this, "Product added on Cart.");
-        if(isOpenCart){
-            ClassUtil.openActivityCart(this);
+        }else {
+            BaseUtil.showToast(this, BaseConstants.Error.MSG_ERROR);
         }
     }
 }
