@@ -1,6 +1,7 @@
 package com.appsfeature.global.util;
 
 import android.content.Context;
+import android.text.SpannableString;
 import android.text.TextUtils;
 
 import com.appsfeature.global.model.CartModel;
@@ -27,23 +28,9 @@ public class AppCartMaintainer extends ListMaintainer {
         TaskRunner.getInstance().executeAsync(new Callable<CartModel>() {
             @Override
             public CartModel call() throws Exception {
-                CartModel cartModel = null;
-                float price = 0, discount = 0, delivery = 0, total = 0;
                 List<ContentModel> mProducts = getData(context, CART_DATA, new TypeToken<List<ContentModel>>() {
                 });
-                if(mProducts != null && mProducts.size() > 0) {
-                    cartModel = new CartModel();
-                    cartModel.setProducts(mProducts);
-                    for (ContentModel item : mProducts){
-                        price += item.getPrice();
-                    }
-                    total = (price + delivery) - discount;
-                    cartModel.setPrice(price);
-                    cartModel.setDiscount(discount);
-                    cartModel.setDelivery(delivery);
-                    cartModel.setTotal(total);
-                }
-                return cartModel;
+                return getCalculatedCartList(mProducts);
             }
         }, new TaskRunner.Callback<CartModel>() {
             @Override
@@ -51,6 +38,41 @@ public class AppCartMaintainer extends ListMaintainer {
                 callback.onSuccess(result);
             }
         });
+    }
+
+    public static void getCartList(List<ContentModel> mProducts, Response.Status<CartModel> callback) {
+        TaskRunner.getInstance().executeAsync(new Callable<CartModel>() {
+            @Override
+            public CartModel call() throws Exception {
+                return getCalculatedCartList(mProducts);
+            }
+        }, new TaskRunner.Callback<CartModel>() {
+            @Override
+            public void onComplete(CartModel result) {
+                callback.onSuccess(result);
+            }
+        });
+    }
+
+    private static CartModel getCalculatedCartList(List<ContentModel> mProducts) {
+        float price = 0, discount = 0, delivery = 0, total = 0;
+        CartModel cartModel = null;
+        if(mProducts != null && mProducts.size() > 0) {
+            cartModel = new CartModel();
+            cartModel.setProducts(mProducts);
+            for (ContentModel item : mProducts){
+                price += item.getPrice();
+                if (item.getDiscountPrice() < item.getPrice()) {
+                    discount += (item.getPrice() - item.getDiscountPrice());
+                }
+            }
+            total = (price + delivery) - discount;
+            cartModel.setPrice(price);
+            cartModel.setDiscount(discount);
+            cartModel.setDelivery(delivery);
+            cartModel.setTotal(total);
+        }
+        return cartModel;
     }
 
     public static void removeCartItem(Context context, String matchText, Response.Status<Boolean> callback) {

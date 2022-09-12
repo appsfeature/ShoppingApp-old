@@ -30,7 +30,7 @@ import com.squareup.picasso.Picasso;
 /**
  * @implNote R.layout.slot_cart_view
  */
-public class CartViewHolder extends AppBaseViewHolder implements View.OnClickListener {
+public class CartViewHolder extends ProductViewHolder implements View.OnClickListener {
 
     public final TextView tvTitle, tvPrice, tvSize, tvColor, tvQuantity;
     public final ImageView ivIcon;
@@ -63,9 +63,9 @@ public class CartViewHolder extends AppBaseViewHolder implements View.OnClickLis
         ProductDetail productDetail = item.getProductDetail();
         if (productDetail != null) {
             if (productDetail.getPrice() > 0) {
-                tvPrice.setText("Rs." + productDetail.getPrice());
+                tvPrice.setText(getPrice(productDetail.getPrice(), item.getDiscountPrice()));
             } else {
-                tvPrice.setText("Rs." + item.getPrice());
+                tvPrice.setText(getPrice(item.getPrice(), item.getDiscountPrice()));
             }
             tvSize.setText("Size - " + productDetail.getSize());
             tvSize.setVisibility(View.VISIBLE);
@@ -76,7 +76,7 @@ public class CartViewHolder extends AppBaseViewHolder implements View.OnClickLis
                 tvColor.setVisibility(View.GONE);
             }
         } else {
-            tvPrice.setText("Rs." + item.getPrice());
+            tvPrice.setText(getPrice(item.getPrice(), item.getDiscountPrice()));
             tvSize.setVisibility(View.GONE);
         }
 

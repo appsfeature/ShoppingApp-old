@@ -95,6 +95,14 @@ public class CartActivity extends AppCompatActivity {
 
             @Override
             public void onItemRemove(int position) {
+                AppCartMaintainer.getCartList(mList, new Response.Status<CartModel>() {
+                    @Override
+                    public void onSuccess(CartModel response) {
+                        if(response != null) {
+                            updatePriceDetails(response);
+                        }
+                    }
+                });
                 showNoDataView();
             }
 
@@ -128,7 +136,11 @@ public class CartActivity extends AppCompatActivity {
 
     private void updatePriceDetails(CartModel response) {
         tvPrice.setText(getString(R.string.price_rs, response.getPrice()));
-        tvDiscount.setText(getString(R.string.price_rs, response.getDiscount()));
+        if(response.getDiscount() > 0){
+            tvDiscount.setText(SupportUtil.getCutPrice(response.getDiscount()));
+        }else {
+            tvDiscount.setText(getString(R.string.price_rs, response.getDiscount()));
+        }
         tvDelivery.setText(getString(R.string.price_rs, response.getDelivery()));
         tvTotal.setText(getString(R.string.price_rs, response.getTotal()));
     }

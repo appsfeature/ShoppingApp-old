@@ -65,7 +65,7 @@ public class ProductViewHolder extends AppBaseViewHolder{
         }
     }
 
-    private SpannableString getPrice(int price, int discountPrice) {
+    public SpannableString getPrice(int price, int discountPrice) {
         SpannableString spannable;
         if(discountPrice >= price){
             spannable = new SpannableString("MRP : Rs." + price);

@@ -8,11 +8,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
@@ -217,5 +221,13 @@ public class SupportUtil extends BaseUtil {
             e.printStackTrace();
         }
         return 0;
+    }
+
+
+    public static SpannableString getCutPrice(float price) {
+        SpannableString spannable = new SpannableString("Rs." + price);
+        spannable.setSpan(new ForegroundColorSpan(Color.GRAY), 0, spannable.length(), 0);
+        spannable.setSpan(new StrikethroughSpan(), 0, spannable.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 }
